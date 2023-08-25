@@ -145,7 +145,7 @@
 </template>
 <script>
 export default {
-  name: 'FileAttribute',
+  name: 'I3vFileAttribute',
   data() {
     return {
       activeTab: "attribute",

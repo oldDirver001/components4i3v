@@ -16,6 +16,5 @@
       "scripthost"
     ]
   },
-  "include": ["examples/**/*"],
   "exclude": ["node_modules", "**/node_modules/*"],
 }

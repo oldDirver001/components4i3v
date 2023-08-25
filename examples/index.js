@@ -2,13 +2,14 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 15:02:30
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-23 15:55:36
+ * @LastEditTime: 2023-08-24 14:48:43
  * @Description: 请输入
  */
 // 导入各个组件
-import FileAttribute from "../packages/fileAttribute/index";
+import FileAttribute from "../packages/file-attribute/index";
+import ProjectDirectory from "../packages/project-directory/index";
 // 把组件保存到一个数组中
-const components = [FileAttribute];
+const components = [FileAttribute, ProjectDirectory];
 // 定义 install 方法
 const install = function (Vue) {
   if (install.installed) return;
