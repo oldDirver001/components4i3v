@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-22 16:47:29
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-25 17:06:34
+ * @LastEditTime: 2023-08-28 17:16:31
  * @Description: 请输入
  */
 import Vue from "vue";
@@ -34,6 +34,9 @@ import {
 import FileAttribute from "../packages/file-attribute/index";
 import AttrPanel from "../packages/attr-panel/index";
 import ScrollPanel from "../packages/scroll-panel/index";
+
+// 自定义指令
+import "@/directive/defaultSelect";
 
 Vue.use(Select);
 Vue.use(Option);

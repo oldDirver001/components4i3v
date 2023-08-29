@@ -2,22 +2,22 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 16:44:13
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-25 14:41:00
+ * @LastEditTime: 2023-08-28 10:54:24
  * @Description: 请输入
 -->
 <template>
   <div id="app">
-    <I3vTaskDirectory></I3vTaskDirectory>
+    <I3vFileAttribute></I3vFileAttribute>
   </div>
 </template>
 
 <script>
-import I3vTaskDirectory from '../packages/task-directory/src/main.vue'
+import I3vFileAttribute from '../packages/file-attribute/src/main.vue'
 
 export default {
   name: 'App',
   components: {
-    I3vTaskDirectory
+    I3vFileAttribute
   }
 }
 </script>
@@ -48,9 +48,4 @@ html, body {
     }
   }
 }
-
-.el-scrollbar__wrap {
-  overflow-x: hidden!important;
-}
-
 </style>

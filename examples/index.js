@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 15:02:30
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-24 14:48:43
+ * @LastEditTime: 2023-08-28 17:58:33
  * @Description: 请输入
  */
 // 导入各个组件
@@ -23,7 +23,7 @@ if (typeof window !== "undefined" && window.Vue) {
   install(window.Vue);
 }
 export default {
-  version: "1.0.4",
+  version: "1.0.8",
   // 导出的对象必须具备一个 install 方法
   install,
   // 组件列表
