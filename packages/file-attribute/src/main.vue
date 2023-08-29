@@ -99,12 +99,11 @@
             <div class="attr-item">
               <div class="attr-item-label">文件大小</div>
               <div class="attr-item-label-value">
-                <!-- {{
-                formatFileSize(
-                  attributeDetail.fileSize || attributeDetail.folderSize
-                )
-              }} -->
-                {{ attributeDetail.fileSize || attributeDetail.folderSize }}
+                {{
+                  formatFileSize(
+                    attributeDetail.fileSize || attributeDetail.folderSize
+                  )
+                }}
               </div>
             </div>
             <div class="attr-item">
@@ -130,7 +129,7 @@
             <div class="attr-item">
               <div class="attr-item-label">创建人</div>
               <div class="attr-item-label-value">
-                {{ currentItem.createBy }}
+                {{ attributeDetail.createBy }}
               </div>
             </div>
             <div class="attr-item">
@@ -181,7 +180,7 @@
           <div
             v-for="(item, index) in operationLog"
             class="log-item"
-            :key="`${item.dataId}-${index}`"
+            :key="index"
           >
             <span class="log-item__value">{{ item.optContent }}</span>
             <div class="log-item__user">
@@ -325,6 +324,7 @@
       title="属性"
       width="400px"
       :visible.sync="attrVisible"
+      @close="handleAnAttrClose"
     >
       <div style="padding: 0 30px">
         <el-form
@@ -388,29 +388,7 @@ export default {
       currentItem: {
         createTime: "createTime",
       },
-      operationLog: [
-        {
-          optContent: "想当然而第六步是你最大的致命伤",
-          createBy: {
-            realName: "熊道齐",
-          },
-          createTime: "2023年8月23日09:12:34",
-        },
-        {
-          optContent: "我按兵不动处于习惯凡事沉默的酝酿",
-          createBy: {
-            realName: "熊俊翔",
-          },
-          createTime: "2023-8-23 09:12:34",
-        },
-        {
-          optContent: "当头炮纯粹出于我礼貌的开场",
-          createBy: {
-            realName: "周瑞",
-          },
-          createTime: "2023/8/23 09:12:34",
-        },
-      ],
+      operationLog: [],
       isPreview: false,
       dialogVisible: false,
       innerVisible: false,
@@ -464,59 +442,73 @@ export default {
       return this.attributeList.filter((item) => item.delFlag !== 1);
     },
   },
-  mounted() {
-    const obj = {
-      id: "40287e11899bd9ea01899bdccab70006",
-      folderName: "绿箭无糖口香糖",
-      folderDescribe: "绿箭无糖口香糖",
-      folderAttribute: null,
-      identifyId: null,
-      createBy: "熊道齐",
-      createTime: "2023-07-28 17:38:06",
-      updateBy: "熊道齐",
-      updateTime: "2023-07-31 11:13:51",
-      folderPosition:
-        "2c9616b68847e6c101884c7f4ce403e4/EnterpriseNetworkDisk/清新弹立方/绿箭无糖口香糖",
-      fsDictQueryVOList: [
-        {
-          dictId: "40287e118a3adb00018a3b5c99e80006",
-          dictName: "测一下",
-          dictItemId: null,
-          dictItemType: 2,
-          dictUseType: 2,
-          dictType: 2,
-          detailDTOList: [
-            {
-              id: "40287e118a3adb00018a3b5c9a990008",
-              itemText: "type-a",
-              description: "type-a",
-              isSelected: 0,
-              dictType: null,
-              delFlag: 0,
-            },
-            {
-              id: "40287e118a3adb00018a3b5c9a990009",
-              itemText: "type-b",
-              description: "type-b",
-              isSelected: 0,
-              dictType: null,
-              delFlag: 0,
-            },
-          ],
-          disabled: false,
-        },
-      ],
-    };
-    this.setAttributeDetail(obj)
-  },
   methods: {
+    /**
+     * @description: 清空 anAttr 这个表单的数据
+     * @return {void}
+     */
+    handleAnAttrClose() {
+      this.$refs.anAttr.resetFields();
+    },
+    /**
+     * @description: 清空数据
+     * @return {void}
+     */
+    handleClear() {
+      this.setAttributeDetail();
+      this.setLog();
+      this.setAssociateList();
+    },
+    /**
+     * @description: 外部通过ref调用此方法给 associateList 赋值
+     * @param {Array} value 关联数据列表
+     * @return {void}
+     */
+    setAssociateList(value) {
+      if (value && value instanceof Array && value.length > 0) {
+        this.associateList = value;
+      } else {
+        this.associateList = [];
+      }
+    },
+    /**
+     * @description: 外部通过ref调用此方法给 operationLog 赋值
+     * @param {Array} value 日志数据列表
+     * @return {void}
+     */
+    setLog(value) {
+      if (value && value instanceof Array && value.length > 0) {
+        this.operationLog = value;
+      } else {
+        this.operationLog = [];
+      }
+    },
+    /**
+     * @description: 格式化文件大小
+     * @param {Number} size 文件大小
+     * @return {String} 格式化后的文件大小
+     */
+    formatFileSize(size) {
+      if (typeof size !== "number") {
+        return "--";
+      }
+      if (size < 1024) {
+        return size + "B";
+      } else if (size >= 1024 && size < 1024 * 1024) {
+        return Math.ceil((size / 1024) * 100) / 100 + "KB";
+      } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {
+        return Math.ceil((size / 1024 / 1024) * 100) / 100 + "MB";
+      } else {
+        return Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100 + "GB";
+      }
+    },
     /**
      * @description: 删除属性
      * @param {Object} value 属性
      * @return {void}
      */
     deleteAttribute(value) {
-      this.$emit('delete-attribute', value)
+      this.$emit("delete-attribute", value);
     },
     /**
      * @description: 外部通过ref调用此方法给 attributeDetail 赋值
@@ -548,15 +540,18 @@ export default {
           }
         });
         this.attributeDetail = value;
-      }
-    },
-    /**
-     * @description: 外部通过ref调用此方法给 associateList 赋值
-     * @return {void}
-     */
-    setAssociateList(value) {
-      if (value) {
-        this.associateList = value;
+      } else {
+        this.attributeDetail = {
+          fsDictQueryVOList: [],
+          filePosition: "",
+          folderPosition: "",
+          fileSize: "",
+          folderSize: "",
+          updateTime: "",
+          updateBy: "",
+          createTime: "",
+          createBy: "",
+        };
       }
     },
     attributeTabClick(tab) {
@@ -643,10 +638,7 @@ export default {
               element.id.startsWith("attr-") && (element.id = "");
             });
           }
-          console.log("add-attribute :>> ", payload);
           this.$emit("add-attribute", payload);
-          // const res = await File.saveFileAttribute(payload);
-          // res && this.getAttributeDetail();
         } else {
           // 编辑自定义属性
           let payload;
@@ -671,10 +663,7 @@ export default {
               element.id.startsWith("attr-") && (element.id = "");
             });
           }
-          console.log("edit-attribute :>> ", payload);
           this.$emit("edit-attribute", payload);
-          // const res = await File.saveFileAttribute(payload);
-          // res && this.getAttributeDetail();
         }
         this.dialogVisible = false;
       });
@@ -779,18 +768,9 @@ export default {
         dictId: attr.dictId,
         dictItemId: valueId,
       };
-      // const res = await File.updateFileValue(payload);
       const pre = attr.detailDTOList.find((item) => item.isSelected);
-      // if (res) {
-      //   pre && (pre.isSelected = 0);
-      //   attribute.isSelected = 1;
-      // } else {
-      //   attr.itemTextId = pre ? pre.id : "";
-      //   attr.description = pre ? pre.description : "";
-      // }
       attr.itemTextId = pre ? pre.id : "";
       attr.description = pre ? pre.description : "";
-      console.log("update-dictItem :>> ", payload);
       this.$emit("update-dictItem", payload);
     },
     /**
@@ -803,29 +783,8 @@ export default {
         dictId: value.dictId,
         dictItemIds: ids,
       };
-      console.log("change-category :>> ", payload);
       this.$emit("change-category", payload);
-      // await File.updateFileCategory(payload);
-      // this.updateCountNum();
     },
-    /**
-     * @description: 更新分类的统计数量
-     * @return {void}
-     */
-    // async updateCountNum() {
-    //   const firstList = await File.queryFileByFirstCategory({ dataType: 1, ...this.queryId });
-    //   firstList.forEach(element => {
-    //     const index = this.firstCategoryList.findIndex(i => i.id === element.id);
-    //     this.$set(this.firstCategoryList[index], "countNum", element.countNum);
-    //   })
-    //   if (this.secondCategory.id) {
-    //     const secondList = await File.queryFileBySecondCategory({ dictId: this.firstCategory.id, dataType: 1, ...this.queryId });
-    //     secondList.forEach(element => {
-    //       const index = this.secondCategoryList.findIndex(i => i.id === element.id);
-    //       this.$set(this.secondCategoryList[index], "countNum", element.countNum);
-    //     })
-    //   }
-    // },
   },
 };
 </script>
