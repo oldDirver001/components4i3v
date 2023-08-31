@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-22 16:47:29
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-28 17:16:31
+ * @LastEditTime: 2023-08-30 17:55:34
  * @Description: 请输入
  */
 import Vue from "vue";
@@ -29,7 +29,10 @@ import {
   Container,
   Aside,
   Main,
+  Breadcrumb,
+  BreadcrumbItem,
 } from "element-ui";
+import '@/assets/scss/global.scss';
 
 import FileAttribute from "../packages/file-attribute/index";
 import AttrPanel from "../packages/attr-panel/index";
@@ -58,6 +61,8 @@ Vue.use(Input);
 Vue.use(Container);
 Vue.use(Aside);
 Vue.use(Main);
+Vue.use(Breadcrumb);
+Vue.use(BreadcrumbItem);
 
 Vue.use(FileAttribute);
 Vue.use(AttrPanel);

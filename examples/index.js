@@ -2,14 +2,17 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 15:02:30
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-29 10:13:49
+ * @LastEditTime: 2023-08-30 17:55:11
  * @Description: 请输入
  */
+import '@/assets/scss/global.scss';
+
 // 导入各个组件
 import FileAttribute from "../packages/file-attribute/index";
 import ProjectDirectory from "../packages/project-directory/index";
+import I3vAttrPanel from "../packages/attr-panel/index";
 // 把组件保存到一个数组中
-const components = [FileAttribute, ProjectDirectory];
+const components = [FileAttribute, ProjectDirectory, I3vAttrPanel];
 // 定义 install 方法
 const install = function (Vue) {
   if (install.installed) return;
@@ -23,9 +26,11 @@ if (typeof window !== "undefined" && window.Vue) {
   install(window.Vue);
 }
 export default {
-  version: "1.0.9",
+  version: "1.0.14",
   // 导出的对象必须具备一个 install 方法
   install,
   // 组件列表
   FileAttribute,
+  ProjectDirectory,
+  I3vAttrPanel,
 };

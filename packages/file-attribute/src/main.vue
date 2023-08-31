@@ -742,15 +742,16 @@ export default {
         if (!valid) {
           return;
         }
-        if (this.anAttr.id) {
+        const param = cloneDeep(this.anAttr)
+        if (param.id) {
           const index = this.attributeList.findIndex(
-            (item) => item.id === this.anAttr.id
+            (item) => item.id === param.id
           );
-          this.$set(this.attributeList, index, this.anAttr);
-          this.currentAttr = { ...this.anAttr };
+          this.$set(this.attributeList, index, param);
+          this.currentAttr = { ...param };
         } else {
-          this.anAttr.id = `attr-${Date.now()}`;
-          this.attributeList.push(this.anAttr);
+          param.id = `attr-${Date.now()}`;
+          this.attributeList.push(param);
         }
         this.attrVisible = false;
       });

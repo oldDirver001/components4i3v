@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-24 14:43:24
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-25 11:05:13
+ * @LastEditTime: 2023-08-30 15:02:33
  * @Description: 请输入
 -->
 <template>
@@ -10,70 +10,70 @@
     <div ref="dir" class="dir">
       <div class="title">
         <b>目录结构</b>
-        <el-button type="text" icon="el-icon-plus" @click="handleAdd"></el-button>
+        <el-button
+          type="text"
+          icon="el-icon-plus"
+          @click="handleAdd"
+        ></el-button>
       </div>
-      <el-scrollbar :style="{ height: tableHeight }">
-        <el-tree
-          node-key="id"
-          :data="treeData"
-          :props="defaultProps"
-          :highlight-current="true"
-          :expand-on-click-node="false"
-          @node-click="handleNodeClick"
-        >
-          <div class="custom-tree-node" slot-scope="{ node, data }">
-            <span class="-left-flex"
-              ><img
-                src="@/assets/document-icons/folder.png"
-                :style="imageStyle"
-              />
-              <span>{{ data.label }}</span></span
+      <el-tree
+        node-key="id"
+        :data="treeData"
+        :props="defaultProps"
+        :highlight-current="true"
+        :expand-on-click-node="false"
+        @node-click="handleNodeClick"
+      >
+        <div class="custom-tree-node" slot-scope="{ node, data }">
+          <span class="-left-flex"
+            ><img
+              src="@/assets/document-icons/folder.png"
+              :style="imageStyle"
+            />
+            <span>{{ data.label }}</span></span
+          >
+          <!-- <span>{{ data.label }}</span> -->
+          <span>
+            <el-popover
+              :ref="`popRef${data.id}`"
+              placement="bottom"
+              trigger="click"
+              popper-class="project-folder-tree-pop"
             >
-            <!-- <span>{{ data.label }}</span> -->
-            <span>
-              <el-popover
-                :ref="`popRef${data.id}`"
-                placement="bottom"
-                trigger="click"
-                popper-class="project-folder-tree-pop"
+              <el-button
+                style="transform: rotateZ(90deg)"
+                slot="reference"
+                icon="el-icon-more"
+                type="text"
+                size="small"
+                @click="handlePopShow(data)"
               >
-                <el-button
-                  style="transform: rotateZ(90deg)"
-                  slot="reference"
-                  icon="el-icon-more"
-                  type="text"
-                  size="small"
-                  @click="handlePopShow(data)"
-                >
-                </el-button>
-                <ul>
-                  <li>
-                    <el-button type="text" @click="handleLiEdit(node, data)"
-                      >编辑</el-button
-                    >
-                  </li>
-                  <li>
-                    <el-button type="text">添加子目录</el-button>
-                  </li>
-                  <li>
-                    <el-button type="text" @click="handleLiDel(node, data)"
-                      >删除</el-button
-                    >
-                  </li>
-                </ul>
-              </el-popover>
-            </span>
-          </div>
-        </el-tree>
-      </el-scrollbar>
+              </el-button>
+              <ul>
+                <li>
+                  <el-button type="text" @click="handleLiEdit(node, data)"
+                    >编辑</el-button
+                  >
+                </li>
+                <li>
+                  <el-button type="text">添加子目录</el-button>
+                </li>
+                <li>
+                  <el-button type="text" @click="handleLiDel(node, data)"
+                    >删除</el-button
+                  >
+                </li>
+              </ul>
+            </el-popover>
+          </span>
+        </div>
+      </el-tree>
     </div>
     <div class="attr">
       <div class="title">
         <b>属性</b>
       </div>
-      <el-scrollbar :style="{ height: tableHeight }">
-        <I3vAttrPanel></I3vAttrPanel>
-      </el-scrollbar>
+      <I3vAttrPanel></I3vAttrPanel>
     </div>
 
     <!-- 添加目录dialog -->
@@ -82,6 +82,7 @@
       width="600px"
       :close-on-click-modal="false"
       :show-close="false"
+      append-to-body
     >
       <div>
         <el-form :model="form">
@@ -94,7 +95,14 @@
             <el-input v-model="form.name"></el-input>
           </el-form-item>
         </el-form>
-        <I3vAttrPanel></I3vAttrPanel>
+        <I3vAttrPanel
+          ref="I3vAttrPanel"
+          @add-attribute="handleAddAttribute"
+          @edit-attribute="handleEditAttribute"
+          @delete-attribute="handleDelAttribute"
+          @update-dictItem="handleUpdateAttribute"
+          @change-category="handleChangeCategory"
+        ></I3vAttrPanel>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -127,7 +135,6 @@ function loopData(parent, currentLevel = 1) {
   });
 }
 loopData({ id: `${globalId}`, label: `${globalId}`, children: TREE_DATA }, 1);
-console.log("TREE_DATA :>> ", TREE_DATA);
 export default {
   name: "I3vProjectDirectory",
   data() {
@@ -158,14 +165,22 @@ export default {
   created() {
     this.treeData = TREE_DATA;
   },
-  mounted() {
-    this.handleSetTableHeight();
-    window.addEventListener("resize", this.handleSetTableHeight);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.handleSetTableHeight);
-  },
   methods: {
+    handleAddAttribute(value) {
+      this.$emit("add-attribute", value);
+    },
+    handleEditAttribute(value) {
+      this.$emit("edit-attribute", value);
+    },
+    handleDelAttribute(value) {
+      this.$emit("delete-attribute", value);
+    },
+    handleUpdateAttribute(value) {
+      this.$emit("update-dictItem", value);
+    },
+    handleChangeCategory(value) {
+      this.$emit("change-category", value);
+    },
     handleAdd() {
       this.dialogVisible = true;
     },
@@ -196,9 +211,6 @@ export default {
     handleLiEdit() {
       this.dialogVisible = true;
     },
-    handleSetTableHeight() {
-      this.tableHeight = `calc(100% - 34px)`;
-    },
     handleNodeClick(data) {
       console.log(data);
       if (this.previousNodeId !== data.id) {
@@ -212,9 +224,8 @@ export default {
 <style lang="scss">
 .i3v-project-directory {
   display: flex;
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  padding: 20px;
+  width: 100%;
+  height: 100%;
   .dir {
     flex: 1;
     border: 1px solid #eeeeee;
