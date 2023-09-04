@@ -1,144 +1,13 @@
 <template>
-  <div class="i3v-file-attribute-panel">
-    <div class="attribute-wrapper" ref="attributeWrapper">
-      <div class="attr-item">
-        <div class="attr-item-label"><span>文件来源</span></div>
-        <div class="attr-item-label-value">
-          <span>{{
-            attributeDetail.filePosition || attributeDetail.folderPosition
-          }}</span>
-        </div>
-      </div>
-      <template v-if="attributeDetail.fsDictQueryVOList">
-        <div
-          v-for="item in attributeDetail.fsDictQueryVOList"
-          class="attr-item"
-          :key="item.dictId"
-        >
-          <div class="attr-item-label">{{ item.dictName }}</div>
-          <div
-            class="attr-item-label-value"
-            :class="{
-              'custom-attribute': item.dictUseType === 2 && item.dictType === 2,
-            }"
-          >
-            <template v-if="item.dictUseType === 1">
-              <el-select
-                v-model="item.itemTextId"
-                v-defaultSelect="[defaultSelect, item.itemTextId]"
-                multiple
-                placeholder="请选择"
-                size="mini"
-                style="width: 100%"
-                :disabled="isPreview"
-                @change="changeItemCategory($event, item)"
-              >
-                <el-option
-                  v-for="site in item.detailDTOList"
-                  :key="site.id"
-                  :label="site.itemText"
-                  :value="site.id"
-                  :disabled="defaultSelect.includes(site.id)"
-                ></el-option>
-              </el-select>
-              <span class="descr">{{ item.description }}</span>
-            </template>
-            <template v-if="item.dictUseType === 2 && item.dictItemType === 2">
-              <el-select
-                v-model="item.itemTextId"
-                placeholder="请选择"
-                size="mini"
-                style="width: 140px"
-                :disabled="isPreview"
-                @change="changeAttrValue($event, item)"
-              >
-                <el-option
-                  v-for="site in item.detailDTOList"
-                  :key="site.id"
-                  :label="site.itemText"
-                  :value="site.id"
-                ></el-option>
-              </el-select>
-              <span class="descr">{{ item.description }}</span>
-            </template>
-            <template v-if="item.dictUseType === 2 && item.dictItemType === 1">
-              <span>{{ item.detailDTOList[0].itemText }}</span>
-            </template>
-            <template
-              v-if="
-                item.dictType === 2 && item.dictItemType !== 0 && !isPreview
-              "
-            >
-              <i
-                class="el-icon-edit attr-action attr-edit"
-                title="编辑"
-                @click="showAttributeDialog(item)"
-              ></i>
-              <i
-                class="el-icon-delete attr-action"
-                title="删除"
-                @click="deleteAttribute(item)"
-              ></i>
-            </template>
-          </div>
-        </div>
-      </template>
-      <div class="attr-item">
-        <div class="attr-item-label">文件大小</div>
-        <div class="attr-item-label-value">
-          {{
-            formatFileSize(
-              attributeDetail.fileSize || attributeDetail.folderSize
-            )
-          }}
-        </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">更新时间</div>
-        <div class="attr-item-label-value">
-          <!-- {{ Object.dayjs(attributeDetail.updateTime) }} -->
-          {{ attributeDetail.updateTime }}
-        </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">更新人</div>
-        <div class="attr-item-label-value">
-          {{ attributeDetail.updateBy }}
-        </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">创建时间</div>
-        <div class="attr-item-label-value">
-          <!-- {{ Object.dayjs(attributeDetail.createTime) }} -->
-          {{ attributeDetail.createTime }}
-        </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">创建人</div>
-        <div class="attr-item-label-value">
-          {{ attributeDetail.createBy }}
-        </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">权限</div>
-        <div class="attr-item-label-value">
-          <i class="el-icon-setting"></i>
-        </div>
-      </div>
-      <div v-if="!isPreview" class="attr-item">
-        <div class="attr-item-label pointer" @click="showAttributeDialog(null)">
-          +自定义属性
-        </div>
-      </div>
-    </div>
-    <!-- 自定义属性 -->
+  <div class="i3v-add-attr-panel">
+    <!-- 自定义属性 start -->
     <el-dialog
-      v-if="dialogVisible"
       append-to-body
       class="ss-dialog no-header-bottom"
       title="自定义属性"
       width="460px"
       :visible.sync="dialogVisible"
+      @close="handleClose"
     >
       <div class="fileattr-dialog-content">
         <el-form
@@ -200,61 +69,60 @@
           >确&nbsp;&nbsp;定</el-button
         >
       </div>
-      <el-dialog
-        append-to-body
-        class="ss-dialog"
-        title="属性列表"
-        width="460px"
-        :visible.sync="innerVisible"
-      >
-        <div class="inner-dialog-content">
-          <div class="attr-list">
-            <div class="attr-list-row">
-              <div class="attr-list-item border-right">值</div>
-              <div class="attr-list-item">描述</div>
-            </div>
-            <div
-              v-for="item in attributeFilterList"
-              class="attr-list-row pointer"
-              :key="item.id"
-              :class="{
-                'is-active': currentAttr && currentAttr.id === item.id,
-              }"
-              @click="selectAttr(item)"
-            >
-              <div class="attr-list-item">
-                <span>{{ item.itemText }}</span>
-              </div>
-              <div class="attr-list-item">
-                <span>{{ item.description }}</span>
-              </div>
-            </div>
+    </el-dialog>
+    <!-- 自定义属性 end -->
+    <!-- 属性列表 start -->
+    <el-dialog
+      append-to-body
+      class="ss-dialog"
+      title="属性列表"
+      width="460px"
+      :visible.sync="innerVisible"
+    >
+      <div class="inner-dialog-content">
+        <div class="attr-list">
+          <div class="attr-list-row">
+            <div class="attr-list-item border-right">值</div>
+            <div class="attr-list-item">描述</div>
           </div>
-          <div class="attr-button">
-            <el-button type="primary" @click="confirmAttrList">确定</el-button>
-            <el-button type="info" @click="innerVisible = false"
-              >取消</el-button
-            >
-            <el-button type="primary" @click="updateAnAttr(null)"
-              >添加</el-button
-            >
-            <el-button
-              type="primary"
-              :disabled="currentAttr === null"
-              @click="updateAnAttr(currentAttr)"
-              >修改</el-button
-            >
-            <el-button
-              type="primary"
-              :disabled="currentAttr === null"
-              @click="deleteAnAttr"
-              >删除</el-button
-            >
+          <div
+            v-for="item in attributeFilterList"
+            class="attr-list-row pointer"
+            :key="item.id"
+            :class="{
+              'is-active': currentAttr && currentAttr.id === item.id,
+            }"
+            @click="selectAttr(item)"
+          >
+            <div class="attr-list-item">
+              <span>{{ item.itemText }}</span>
+            </div>
+            <div class="attr-list-item">
+              <span>{{ item.description }}</span>
+            </div>
           </div>
         </div>
-      </el-dialog>
+        <div class="attr-button">
+          <el-button type="primary" @click="confirmAttrList">确定</el-button>
+          <el-button type="info" @click="innerVisible = false">取消</el-button>
+          <el-button type="primary" @click="updateAnAttr(null)">添加</el-button>
+          <el-button
+            type="primary"
+            :disabled="currentAttr === null"
+            @click="updateAnAttr(currentAttr)"
+            >修改</el-button
+          >
+          <el-button
+            type="primary"
+            :disabled="currentAttr === null"
+            @click="deleteAnAttr"
+            >删除</el-button
+          >
+        </div>
+      </div>
     </el-dialog>
-    <!-- 属性 -->
+    <!-- 属性列表 end -->
+    <!-- 属性 start -->
     <el-dialog
       append-to-body
       class="ss-dialog no-header-bottom"
@@ -298,19 +166,16 @@
         >
       </div>
     </el-dialog>
+    <!-- 属性 end -->
   </div>
 </template>
 <script>
 import { cloneDeep, pick } from "lodash";
 
 export default {
-  name: "I3vAttrPanel",
+  name: "I3vAddAttrPanel",
   data() {
     return {
-      attributeDetail: {
-        fsDictQueryVOList: [],
-      },
-      isPreview: false,
       dialogVisible: false,
       innerVisible: false,
       customAttribute: {
@@ -352,9 +217,6 @@ export default {
           trigger: ["change", "blur"],
         },
       },
-      // 属性的分类里默认不能删除的选中项,因为文件和文件夹一定要属于某个二级分类,但是不能明确上传时的二级分类是哪个
-      // 目前规则是(后续可能会修改)：1、选中二级分类时,不能删除当前二级分类 2、选中全部时,文件属性里第一个选中的二级分类不能删除
-      defaultSelect: [],
     };
   },
   computed: {
@@ -364,23 +226,12 @@ export default {
     },
   },
   methods: {
-    /**
-     * @description: 自定义属性-固定值-选择文件属性值
-     * @param {String} valueId 选择项
-     * @return {void}
-     */
-    async changeAttrValue(valueId, attr) {
-      const attribute = attr.detailDTOList.find((item) => item.id === valueId);
-      attr.description = attribute.description;
-      const payload = {
-        dataId: this.currentItem.id,
-        dictId: attr.dictId,
-        dictItemId: valueId,
-      };
-      const pre = attr.detailDTOList.find((item) => item.isSelected);
-      attr.itemTextId = pre ? pre.id : "";
-      attr.description = pre ? pre.description : "";
-      this.$emit("update-dictItem", payload);
+    showDialog() {
+      this.dialogVisible = true;
+    },
+    handleClose() {
+      this.detailDTOS = [];
+      this.$refs.customAttribute.resetFields();
     },
     /**
      * @description: 修改文件/文件夹分类
@@ -436,7 +287,7 @@ export default {
         if (!valid) {
           return;
         }
-        const param = cloneDeep(this.anAttr)
+        const param = cloneDeep(this.anAttr);
         if (param.id) {
           const index = this.attributeList.findIndex(
             (item) => item.id === param.id
@@ -580,126 +431,10 @@ export default {
       this.currentAttr = null;
       this.innerVisible = true;
     },
-    /**
-     * @description: 显示 自定义属性 弹窗
-     * @return {void}
-     */
-    showAttributeDialog(value) {
-      if (value) {
-        let obj = pick(value, ["dictId", "dictName", "dictItemType"]);
-        obj.dataId = "";
-        obj.itemText =
-          value.dictItemType === 1 ? value.detailDTOList[0].itemText : "";
-        obj.description = "";
-        obj.detailDTOS = cloneDeep(value.detailDTOList);
-        this.customAttribute = obj;
-      } else {
-        this.customAttribute = {
-          dataId: "",
-          delFlag: 0,
-          dictType: 2,
-          dictId: "",
-          dictName: "",
-          dictItemType: "",
-          itemText: "",
-          description: "",
-          detailDTOS: [],
-        };
-      }
-      this.dialogVisible = true;
-    },
-    /**
-     * @description: 格式化文件大小
-     * @param {Number} size 文件大小
-     * @return {String} 格式化后的文件大小
-     */
-    formatFileSize(size) {
-      if (typeof size !== "number") {
-        return "--";
-      }
-      if (size < 1024) {
-        return size + "B";
-      } else if (size >= 1024 && size < 1024 * 1024) {
-        return Math.ceil((size / 1024) * 100) / 100 + "KB";
-      } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {
-        return Math.ceil((size / 1024 / 1024) * 100) / 100 + "MB";
-      } else {
-        return Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100 + "GB";
-      }
-    },
   },
 };
 </script>
 <style lang="scss">
-.attribute-wrapper {
-  height: 70%;
-  overflow: auto;
-
-  .attr-item {
-    font-size: 14px;
-    display: flex;
-    border-top: 1px solid #f7f7f7;
-    border-bottom: 1px solid #f7f7f7;
-
-    .attr-item-label {
-      flex-shrink: 0;
-      box-sizing: border-box;
-      width: 100px;
-      min-height: 32px;
-      padding: 6px 8px;
-      text-align: center;
-      background-color: #f2f2f2;
-
-      > span {
-        line-height: 20px;
-        word-break: break-all;
-      }
-    }
-
-    .attr-item-label-value {
-      box-sizing: border-box;
-      width: calc(100% - 100px);
-      min-height: 32px;
-      padding: 0 6px;
-      background-color: #fff;
-      display: flex;
-      align-items: center;
-      position: relative;
-
-      &.custom-attribute {
-        padding-right: 34px;
-      }
-
-      > span {
-        word-break: break-all;
-      }
-
-      &:hover {
-        .attr-action {
-          display: block;
-        }
-      }
-
-      .descr {
-        padding-left: 6px;
-        color: #c0c4cc;
-      }
-
-      .attr-action {
-        display: none;
-        position: absolute;
-        top: calc(50% - 8px);
-        right: 6px;
-        font-size: 16px;
-        cursor: pointer;
-
-        &.attr-edit {
-          right: 28px;
-        }
-      }
-    }
-  }
-}
 .fileattr-dialog-content {
   padding: 0 30px;
 
@@ -707,5 +442,54 @@ export default {
     display: flex;
     align-items: center;
   }
+}
+</style>
+<style lang="scss">
+.ss-dialog .el-dialog {
+  border-radius: 10px;
+}
+
+.ss-dialog .el-dialog .el-dialog__header {
+  box-sizing: content-box;
+  height: 24px;
+  padding: 28px 0 21px;
+  margin: 0 30px 0 30px;
+  border-bottom: 1px solid #e6ebf2;
+}
+
+.ss-dialog.no-header-bottom .el-dialog .el-dialog__header {
+  border-bottom-color: #fff;
+}
+
+.ss-dialog.no-header .el-dialog .el-dialog__header {
+  display: none;
+}
+
+.ss-dialog .el-dialog .el-dialog__header .el-dialog__title {
+  line-height: 24px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #344563;
+}
+
+.ss-dialog .el-dialog .el-dialog__header .el-dialog__headerbtn {
+  top: 30px;
+  right: 30px;
+  font-size: 20px;
+}
+
+.ss-dialog .el-dialog .el-dialog__header .el-dialog__headerbtn i {
+  display: block;
+}
+
+.ss-dialog .el-dialog .el-dialog__body {
+  padding: 0;
+}
+
+.ss-dialog .el-dialog .el-dialog__footer {
+  min-height: 90px;
+  padding: 26px 30px 24px;
+  background-color: #f5f7fa;
+  border-radius: 0 0 10px 10px;
 }
 </style>
