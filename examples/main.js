@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-22 16:47:29
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-08-30 17:55:34
+ * @LastEditTime: 2023-09-11 17:39:00
  * @Description: 请输入
  */
 import Vue from "vue";
@@ -31,6 +31,7 @@ import {
   Main,
   Breadcrumb,
   BreadcrumbItem,
+  Cascader,
 } from "element-ui";
 import '@/assets/scss/global.scss';
 
@@ -63,6 +64,7 @@ Vue.use(Aside);
 Vue.use(Main);
 Vue.use(Breadcrumb);
 Vue.use(BreadcrumbItem);
+Vue.use(Cascader);
 
 Vue.use(FileAttribute);
 Vue.use(AttrPanel);

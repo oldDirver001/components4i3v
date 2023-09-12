@@ -4,9 +4,17 @@
       <div class="right-close">
         <!-- <svg-icon icon="close"></svg-icon> -->
       </div>
-      <el-tabs v-model="activeTab" @tab-click="attributeTabClick">
+      <el-tabs v-model="activeTab">
         <el-tab-pane label="属性" name="attribute">
-          <div class="attribute-wrapper" ref="attributeWrapper">
+          <I3vAttrPanel
+            ref="I3vAttrPanel"
+            @add-attribute="handleAddAttribute"
+            @edit-attribute="handleEditAttribute"
+            @delete-attribute="handleDelAttribute"
+            @update-dictItem="handleUpdateAttribute"
+            @change-category="handleChangeCategory"
+          ></I3vAttrPanel>
+          <!-- <div class="attribute-wrapper" ref="attributeWrapper">
             <div class="attr-item">
               <div class="attr-item-label"><span>文件来源</span></div>
               <div class="attr-item-label-value">
@@ -109,7 +117,6 @@
             <div class="attr-item">
               <div class="attr-item-label">更新时间</div>
               <div class="attr-item-label-value">
-                <!-- {{ Object.dayjs(attributeDetail.updateTime) }} -->
                 {{ attributeDetail.updateTime }}
               </div>
             </div>
@@ -122,7 +129,6 @@
             <div class="attr-item">
               <div class="attr-item-label">创建时间</div>
               <div class="attr-item-label-value">
-                <!-- {{ Object.dayjs(attributeDetail.createTime) }} -->
                 {{ attributeDetail.createTime }}
               </div>
             </div>
@@ -146,35 +152,34 @@
                 +自定义属性
               </div>
             </div>
-          </div>
-          <div class="associate-wrapper" ref="associateWrapper">
-            <span>关联</span>
-            <el-table
-              header-cell-class-name="app-header-cell"
-              :data="associateList"
-            >
-              <el-table-column
-                label="名称"
-                prop="eventName"
-                min-width="180"
-              ></el-table-column>
-              <el-table-column
-                label="类型"
-                prop="eventType"
-                min-width="180"
-              ></el-table-column>
-              <el-table-column
-                label="负责人"
-                prop="responsibleBy"
-                min-width="180"
-              ></el-table-column>
-              <el-table-column
-                label="状态"
-                prop="status"
-                min-width="180"
-              ></el-table-column>
-            </el-table>
-          </div>
+          </div> -->
+        </el-tab-pane>
+        <el-tab-pane label="关联" name="rela">
+          <el-table
+            header-cell-class-name="app-header-cell"
+            :data="associateList"
+          >
+            <el-table-column
+              label="名称"
+              prop="eventName"
+              min-width="180"
+            ></el-table-column>
+            <el-table-column
+              label="类型"
+              prop="eventType"
+              min-width="180"
+            ></el-table-column>
+            <el-table-column
+              label="负责人"
+              prop="responsibleBy"
+              min-width="180"
+            ></el-table-column>
+            <el-table-column
+              label="状态"
+              prop="status"
+              min-width="180"
+            ></el-table-column>
+          </el-table>
         </el-tab-pane>
         <el-tab-pane label="操作日志" name="log">
           <div
@@ -195,7 +200,7 @@
       </el-tabs>
     </div>
     <!-- 自定义属性 -->
-    <el-dialog
+    <!-- <el-dialog
       v-if="dialogVisible"
       append-to-body
       class="ss-dialog no-header-bottom"
@@ -210,6 +215,7 @@
           :model="customAttribute"
           :rules="rules"
         >
+          <el-form-item prop="dictId" v-show="false"></el-form-item>
           <el-form-item label="属性名称" prop="dictName">
             <el-input
               v-model.trim="customAttribute.dictName"
@@ -316,9 +322,9 @@
           </div>
         </div>
       </el-dialog>
-    </el-dialog>
+    </el-dialog> -->
     <!-- 属性 -->
-    <el-dialog
+    <!-- <el-dialog
       append-to-body
       class="ss-dialog no-header-bottom"
       title="属性"
@@ -360,14 +366,16 @@
           >确&nbsp;&nbsp;定</el-button
         >
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
 import { cloneDeep, pick } from "lodash";
+import I3vAttrPanel from "./attr-panel.vue";
 
 export default {
   name: "I3vFileAttribute",
+  components: { I3vAttrPanel },
   data() {
     return {
       activeTab: "attribute",
@@ -393,6 +401,7 @@ export default {
       dialogVisible: false,
       innerVisible: false,
       customAttribute: {
+        dictId: "",
         dataId: "", // 文件或文件夹id
         delFlag: 0,
         dictName: "", // 属性名称
@@ -443,6 +452,21 @@ export default {
     },
   },
   methods: {
+    handleAddAttribute(value) {
+      this.$emit("add-attribute", value);
+    },
+    handleEditAttribute(value) {
+      this.$emit("edit-attribute", value);
+    },
+    handleDelAttribute(value) {
+      this.$emit("delete-attribute", value);
+    },
+    handleUpdateAttribute(value) {
+      this.$emit("update-dictItem", value);
+    },
+    handleChangeCategory(value) {
+      this.$emit("change-category", value);
+    },
     /**
      * @description: 清空 anAttr 这个表单的数据
      * @return {void}
@@ -515,6 +539,7 @@ export default {
      * @return {void}
      */
     setAttributeDetail(value) {
+      console.log('setAttributeDetail', value)
       if (value && value.id && value.fsDictQueryVOList) {
         value.fsDictQueryVOList.forEach((element) => {
           element.disabled = false;
@@ -553,9 +578,6 @@ export default {
           createBy: "",
         };
       }
-    },
-    attributeTabClick(tab) {
-      console.log("tab :>> ", tab);
     },
     /**
      * @description: 显示 自定义属性 弹窗
@@ -742,7 +764,7 @@ export default {
         if (!valid) {
           return;
         }
-        const param = cloneDeep(this.anAttr)
+        const param = cloneDeep(this.anAttr);
         if (param.id) {
           const index = this.attributeList.findIndex(
             (item) => item.id === param.id

@@ -16,6 +16,7 @@
           :model="customAttribute"
           :rules="rules"
         >
+          <el-form-item prop="dictId" v-show="false"></el-form-item>
           <el-form-item label="属性名称" prop="dictName">
             <el-input
               v-model.trim="customAttribute.dictName"
@@ -179,6 +180,7 @@ export default {
       dialogVisible: false,
       innerVisible: false,
       customAttribute: {
+        dictId: "",
         dataId: "", // 文件或文件夹id
         delFlag: 0,
         dictName: "", // 属性名称
@@ -226,32 +228,51 @@ export default {
     },
   },
   methods: {
+    editFormDefData(value) {
+      // let obj = pick(value, ["id", "dictId", "dictName", "dictItemType"]);
+      // obj.dataId = '';
+      // obj.itemText =
+      //   value.dictItemType === 1 ? value.detailDTOList[0].itemText : "";
+      // obj.description = "";
+      // obj.detailDTOS = cloneDeep(value.detailDTOList);
+      // this.dialogVisible = true;
+      // this.$nextTick(() => {
+      //   this.customAttribute = obj;
+      // })
+      //
+      let obj = {};
+      if (value) {
+        obj = pick(value, ["id", "dictId", "dictName", "dictItemType"]);
+        obj.dataId = "";
+        obj.itemText =
+          value.dictItemType === 1 ? value.detailDTOList[0].itemText : "";
+        obj.description = "";
+        obj.detailDTOS = cloneDeep(value.detailDTOList);
+        // this.customAttribute = obj;
+      } else {
+        obj = {
+          dataId: "",
+          delFlag: 0,
+          dictType: 2, // 1默认, 2自定义
+          dictId: "",
+          dictName: "",
+          dictItemType: "",
+          itemText: "",
+          description: "",
+          detailDTOS: [],
+        };
+      }
+      this.dialogVisible = true;
+      this.$nextTick(() => {
+        this.customAttribute = obj;
+      });
+    },
     showDialog() {
       this.dialogVisible = true;
     },
     handleClose() {
       this.detailDTOS = [];
       this.$refs.customAttribute.resetFields();
-    },
-    /**
-     * @description: 修改文件/文件夹分类
-     * @return {void}
-     */
-    async changeItemCategory(ids, value) {
-      const payload = {
-        dataId: this.currentItem.id,
-        dictId: value.dictId,
-        dictItemIds: ids,
-      };
-      this.$emit("change-category", payload);
-    },
-    /**
-     * @description: 删除属性
-     * @param {Object} value 属性
-     * @return {void}
-     */
-    deleteAttribute(value) {
-      this.$emit("delete-attribute", value);
     },
     /**
      * @description: 选择属性列表的属性
