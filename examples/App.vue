@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 16:44:13
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-12 19:14:52
+ * @LastEditTime: 2023-09-14 19:32:11
  * @Description: 请输入
 -->
 <template>
@@ -33,16 +33,16 @@ export default {
   methods: {
     handleShowAttr() {
       this.$refs.I3vFileAttribute.setAttributeDetail({
-        id: "40287e118a884dfa018a88966fc1001d",
-        folderName: "高桥凉介",
-        folderDescribe: "群马县1",
+        id: "40287e118a8c3c64018a8c46f2740027",
+        folderName: "搜狗拼音",
+        folderDescribe: "搜狗拼音",
         folderAttribute: null,
-        identifyId: "40287e118a884dfa018a88966fc1001d",
+        identifyId: "40287e118a8c3c64018a8c46f2740027",
         createBy: "熊道齐",
-        createTime: "2023-09-12 16:51:15",
+        createTime: "2023-09-13 10:02:55",
         updateBy: "熊道齐",
-        updateTime: "2023-09-12 17:51:52",
-        folderPosition: "艾尔登法环/企业网盘/高桥凉介",
+        updateTime: "2023-09-13 10:03:06",
+        folderPosition: "艾尔登法环/企业网盘/高桥凉介/高桥启介/AE86/搜狗拼音",
         fsDictQueryVOList: [
           {
             dictId: "40287e118a83c9ef018a83ceeb7f0010",
@@ -54,6 +54,7 @@ export default {
             detailDTOList: [
               {
                 id: "40287e118a83c9ef018a83ceeba90011",
+                pid: "40287e118a83c9ef018a83ceeb7f0010",
                 itemText: "企业文件",
                 description: null,
                 isSelected: 0,
@@ -62,6 +63,7 @@ export default {
               },
               {
                 id: "40287e118a83c9ef018a83ceeba90012",
+                pid: "40287e118a83c9ef018a83ceeb7f0010",
                 itemText: "个人文件",
                 description: null,
                 isSelected: 0,
@@ -70,6 +72,7 @@ export default {
               },
               {
                 id: "40287e118a83c9ef018a83d8d1ae0013",
+                pid: "ff8080818a82c2b0018a83283c2a0082",
                 itemText: "其他文件",
                 description: null,
                 isSelected: 0,
@@ -78,6 +81,7 @@ export default {
               },
               {
                 id: "40287e118a83c9ef018a83d933e70014",
+                pid: "-1",
                 itemText: "其他文件",
                 description: null,
                 isSelected: 0,
@@ -86,6 +90,7 @@ export default {
               },
               {
                 id: "40287e118a83c9ef018a86f468a90016",
+                pid: "40287e118a83c9ef018a83ceeb7f0010",
                 itemText: "其他文件2",
                 description: null,
                 isSelected: 0,
@@ -94,6 +99,7 @@ export default {
               },
               {
                 id: "40287e118a871f99018a871f99cf0000",
+                pid: "40287e118a83c9ef018a83ceeba90012",
                 itemText: "我的收藏",
                 description: null,
                 isSelected: 0,
@@ -102,6 +108,7 @@ export default {
               },
               {
                 id: "40287e118a871f99018a8730ac1f000b",
+                pid: "40287e118a871f99018a871f99cf0000",
                 itemText: "视频收藏",
                 description: null,
                 isSelected: 0,
@@ -110,6 +117,7 @@ export default {
               },
               {
                 id: "40287e118a871f99018a876c6b2d0019",
+                pid: "all",
                 itemText: "同级1",
                 description: null,
                 isSelected: 0,
@@ -118,6 +126,7 @@ export default {
               },
               {
                 id: "40287e118a871f99018a876e4d54001b",
+                pid: "all",
                 itemText: "同级2",
                 description: null,
                 isSelected: 0,
@@ -126,6 +135,7 @@ export default {
               },
               {
                 id: "40287e118a884dfa018a88740fc40014",
+                pid: "40287e118a884dfa018a8873e9290013",
                 itemText: "子分类C-1",
                 description: null,
                 isSelected: 0,
@@ -134,6 +144,7 @@ export default {
               },
               {
                 id: "40287e118a884dfa018a8890a5e40019",
+                pid: "40287e118a83c9ef018a83ceeb7f0010",
                 itemText: "asdf",
                 description: null,
                 isSelected: 1,
@@ -142,6 +153,7 @@ export default {
               },
               {
                 id: "40287e118a884dfa018a8890d8db001a",
+                pid: "40287e118a884dfa018a8890a5e40019",
                 itemText: "allin",
                 description: null,
                 isSelected: 0,
@@ -151,7 +163,7 @@ export default {
             ],
           },
           {
-            dictId: "40287e118a890269018a890d1e820004",
+            dictId: "40287e118a8c3c64018a8c46f3cb002a",
             dictName: "添加一个自定义属性",
             dictItemId: null,
             dictItemType: 2,
@@ -159,15 +171,17 @@ export default {
             dictType: 2,
             detailDTOList: [
               {
-                id: "40287e118a890269018a890d1f0b0006",
+                id: "40287e118a8c3c64018a8c46f3e5002b",
+                pid: null,
                 itemText: "1",
                 description: "1",
-                isSelected: 1,
+                isSelected: 0,
                 dictType: null,
                 delFlag: 0,
               },
               {
-                id: "40287e118a890269018a890d1f0b0007",
+                id: "40287e118a8c3c64018a8c46f3e6002c",
+                pid: null,
                 itemText: "2",
                 description: "2",
                 isSelected: 0,
@@ -175,7 +189,8 @@ export default {
                 delFlag: 0,
               },
               {
-                id: "40287e118a890269018a890d1f0b0008",
+                id: "40287e118a8c3c64018a8c46f3e6002d",
+                pid: null,
                 itemText: "3",
                 description: "3",
                 isSelected: 0,
@@ -186,12 +201,113 @@ export default {
           },
         ],
       });
+      this.$refs.I3vFileAttribute.setCategoryTree([
+        {
+          id: "40287e118a83c9ef018a83ceeba90011",
+          pid: "40287e118a83c9ef018a83ceeb7f0010",
+          itemText: "企业文件",
+          description: null,
+          isSelected: 0,
+          dictType: null,
+          delFlag: 0,
+          children: [],
+        },
+        {
+          id: "40287e118a83c9ef018a83ceeba90012",
+          pid: "40287e118a83c9ef018a83ceeb7f0010",
+          itemText: "个人文件",
+          description: null,
+          isSelected: 0,
+          dictType: null,
+          delFlag: 0,
+          children: [
+            {
+              id: "40287e118a871f99018a871f99cf0000",
+              pid: "40287e118a83c9ef018a83ceeba90012",
+              itemText: "我的收藏",
+              description: null,
+              isSelected: 0,
+              dictType: 2,
+              delFlag: 0,
+              children: [
+                {
+                  id: "40287e118a871f99018a8730ac1f000b",
+                  pid: "40287e118a871f99018a871f99cf0000",
+                  itemText: "视频收藏",
+                  description: null,
+                  isSelected: 0,
+                  dictType: 2,
+                  delFlag: 0,
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "40287e118a83c9ef018a83d8d1ae0013",
+          pid: "ff8080818a82c2b0018a83283c2a0082",
+          itemText: "其他文件",
+          description: null,
+          isSelected: 0,
+          dictType: null,
+          delFlag: 0,
+          children: [],
+        },
+        {
+          id: "40287e118a83c9ef018a86f468a90016",
+          pid: "40287e118a83c9ef018a83ceeb7f0010",
+          itemText: "其他文件2",
+          description: null,
+          isSelected: 0,
+          dictType: 2,
+          delFlag: 0,
+          children: [],
+        },
+        {
+          id: "40287e118a884dfa018a88740fc40014",
+          pid: "40287e118a884dfa018a8873e9290013",
+          itemText: "子分类C-1",
+          description: null,
+          isSelected: 0,
+          dictType: 2,
+          delFlag: 0,
+          children: [],
+        },
+        {
+          id: "40287e118a884dfa018a8890a5e40019",
+          pid: "40287e118a83c9ef018a83ceeb7f0010",
+          itemText: "asdf",
+          description: null,
+          isSelected: 1,
+          dictType: 2,
+          delFlag: 0,
+          children: [
+            {
+              id: "40287e118a884dfa018a8890d8db001a",
+              pid: "40287e118a884dfa018a8890a5e40019",
+              itemText: "allin",
+              description: null,
+              isSelected: 0,
+              dictType: 2,
+              delFlag: 0,
+              children: [],
+            },
+          ],
+        },
+        {
+          id: "40287e118a915231018a9184f9980008",
+          pid: "40287e118a83c9ef018a83ceeb7f0010",
+          itemText: "doublemint",
+          description: null,
+          isSelected: 0,
+          dictType: 2,
+          delFlag: 0,
+          children: [],
+        },
+      ]);
     },
     handleShow() {
-      console.log(
-        "this.$refs.I3vAddAttrPanel :>> ",
-        this.$refs.I3vAddAttrPanel
-      );
       // this.$refs.I3vAddAttrPanel.showDialog()
       this.$refs.I3vAddAttrPanel.editFormDefData({
         id: "40287e118a63d749018a6429d6910004",

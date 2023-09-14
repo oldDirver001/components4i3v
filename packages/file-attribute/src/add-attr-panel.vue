@@ -229,6 +229,7 @@ export default {
   },
   methods: {
     editFormDefData(value) {
+      console.log('value :>> ', value);
       // let obj = pick(value, ["id", "dictId", "dictName", "dictItemType"]);
       // obj.dataId = '';
       // obj.itemText =
@@ -265,6 +266,7 @@ export default {
       this.dialogVisible = true;
       this.$nextTick(() => {
         this.customAttribute = obj;
+        console.log('this.customAttribute :>> ', this.customAttribute);
       });
     },
     showDialog() {

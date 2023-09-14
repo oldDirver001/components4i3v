@@ -48,7 +48,7 @@
                 style="width: 100%"
                 :disabled="isPreview"
                 :options="options"
-                :props="{ multiple: true, checkStrictly: true }"
+                :props="{ emitPath: false, multiple: true, checkStrictly: true, value: 'id', label: 'itemText' }"
                 clearable
                 size="mini"
                 @change="changeItemCategory($event, item)"
@@ -148,499 +148,33 @@
         </div>
       </div>
     </div>
-    <!-- 自定义属性 -->
-    <!-- <el-dialog
-      v-if="dialogVisible"
-      append-to-body
-      class="ss-dialog no-header-bottom"
-      title="自定义属性"
-      width="460px"
-      :visible.sync="dialogVisible"
-    >
-      <div class="fileattr-dialog-content">
-        <el-form
-          label-width="100px"
-          ref="customAttribute"
-          :model="customAttribute"
-          :rules="rules"
-        >
-          <el-form-item prop="dictId" v-show="false"></el-form-item>
-          <el-form-item label="属性名称" prop="dictName">
-            <el-input
-              v-model.trim="customAttribute.dictName"
-              placeholder="请输入属性名称"
-              :maxlength="10"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="值类型" prop="dictItemType">
-            <el-select
-              v-model="customAttribute.dictItemType"
-              placeholder="请选择"
-              style="width: 100%"
-              :disabled="!!customAttribute.dictId"
-              @change="changeValue"
-            >
-              <el-option label="自由输入" :value="1"></el-option>
-              <el-option label="固定值" :value="2"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="值" prop="itemText">
-            <div class="attr-value">
-              <el-input
-                v-model.trim="customAttribute.itemText"
-                :placeholder="
-                  customAttribute.dictItemType
-                    ? `请${
-                        customAttribute.dictItemType === 1
-                          ? '输入值'
-                          : '点击右侧设置值列表'
-                      }`
-                    : '请选择值类型'
-                "
-                :disabled="customAttribute.dictItemType !== 1"
-                :maxlength="10"
-              ></el-input>
-              <i
-                v-if="customAttribute.dictItemType === 2"
-                class="el-icon-more pointer"
-                style="margin-left: 16px"
-                @click="showInnerDialog"
-              ></i>
-            </div>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer">
-        <el-button type="info" @click="dialogVisible = false"
-          >取&nbsp;&nbsp;消</el-button
-        >
-        <el-button style="width: 110px" type="primary" @click="confirmAddAttr"
-          >确&nbsp;&nbsp;定</el-button
-        >
-      </div>
-      <el-dialog
-        append-to-body
-        class="ss-dialog"
-        title="属性列表"
-        width="460px"
-        :visible.sync="innerVisible"
-      >
-        <div class="inner-dialog-content">
-          <div class="attr-list">
-            <div class="attr-list-row">
-              <div class="attr-list-item border-right">值</div>
-              <div class="attr-list-item">描述</div>
-            </div>
-            <div
-              v-for="item in attributeFilterList"
-              class="attr-list-row pointer"
-              :key="item.id"
-              :class="{
-                'is-active': currentAttr && currentAttr.id === item.id,
-              }"
-              @click="selectAttr(item)"
-            >
-              <div class="attr-list-item">
-                <span>{{ item.itemText }}</span>
-              </div>
-              <div class="attr-list-item">
-                <span>{{ item.description }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="attr-button">
-            <el-button type="primary" @click="confirmAttrList">确定</el-button>
-            <el-button type="info" @click="innerVisible = false"
-              >取消</el-button
-            >
-            <el-button type="primary" @click="updateAnAttr(null)"
-              >添加</el-button
-            >
-            <el-button
-              type="primary"
-              :disabled="currentAttr === null"
-              @click="updateAnAttr(currentAttr)"
-              >修改</el-button
-            >
-            <el-button
-              type="primary"
-              :disabled="currentAttr === null"
-              @click="deleteAnAttr"
-              >删除</el-button
-            >
-          </div>
-        </div>
-      </el-dialog>
-    </el-dialog> -->
-    <!-- 属性 -->
-    <!-- <el-dialog
-      append-to-body
-      class="ss-dialog no-header-bottom"
-      title="属性"
-      width="400px"
-      :visible.sync="attrVisible"
-      @close="handleAnAttrClose"
-    >
-      <div style="padding: 0 30px">
-        <el-form
-          label-width="80px"
-          ref="anAttr"
-          :model="anAttr"
-          :rules="anAttrRules"
-        >
-          <el-form-item label="值" prop="itemText">
-            <el-input
-              v-model.trim="anAttr.itemText"
-              placeholder="请输入值"
-              :maxlength="10"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="描述" prop="description">
-            <el-input
-              v-model.trim="anAttr.description"
-              placeholder="请输入描述"
-              :maxlength="10"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer">
-        <el-button type="info" @click="attrVisible = false"
-          >取&nbsp;&nbsp;消</el-button
-        >
-        <el-button
-          style="width: 110px"
-          type="primary"
-          @click="confirmUpdateAttr"
-          >确&nbsp;&nbsp;定</el-button
-        >
-      </div>
-    </el-dialog> -->
-    <AddAttrPanel ref="AddAttrPanel" @add-attribute="handleAddAttrbute" @edit-attribute="handleEditAttrbute"></AddAttrPanel>
+    <AddAttrPanel
+      ref="AddAttrPanel"
+      @add-attribute="handleAddAttrbute"
+      @edit-attribute="handleEditAttrbute"
+    ></AddAttrPanel>
   </div>
 </template>
 <script>
 import { cloneDeep, pick } from "lodash";
-import AddAttrPanel from './add-attr-panel.vue';
+import AddAttrPanel from "./add-attr-panel.vue";
 
 export default {
   name: "I3vAttrPanel",
   components: { AddAttrPanel },
   data() {
     return {
-      options: [
-        {
-          value: "zhinan",
-          label: "指南",
-          children: [
-            {
-              value: "shejiyuanze",
-              label: "设计原则",
-              children: [
-                {
-                  value: "yizhi",
-                  label: "一致",
-                },
-                {
-                  value: "fankui",
-                  label: "反馈",
-                },
-                {
-                  value: "xiaolv",
-                  label: "效率",
-                },
-                {
-                  value: "kekong",
-                  label: "可控",
-                },
-              ],
-            },
-            {
-              value: "daohang",
-              label: "导航",
-              children: [
-                {
-                  value: "cexiangdaohang",
-                  label: "侧向导航",
-                },
-                {
-                  value: "dingbudaohang",
-                  label: "顶部导航",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          value: "zujian",
-          label: "组件",
-          children: [
-            {
-              value: "basic",
-              label: "Basic",
-              children: [
-                {
-                  value: "layout",
-                  label: "Layout 布局",
-                },
-                {
-                  value: "color",
-                  label: "Color 色彩",
-                },
-                {
-                  value: "typography",
-                  label: "Typography 字体",
-                },
-                {
-                  value: "icon",
-                  label: "Icon 图标",
-                },
-                {
-                  value: "button",
-                  label: "Button 按钮",
-                },
-              ],
-            },
-            {
-              value: "form",
-              label: "Form",
-              children: [
-                {
-                  value: "radio",
-                  label: "Radio 单选框",
-                },
-                {
-                  value: "checkbox",
-                  label: "Checkbox 多选框",
-                },
-                {
-                  value: "input",
-                  label: "Input 输入框",
-                },
-                {
-                  value: "input-number",
-                  label: "InputNumber 计数器",
-                },
-                {
-                  value: "select",
-                  label: "Select 选择器",
-                },
-                {
-                  value: "cascader",
-                  label: "Cascader 级联选择器",
-                },
-                {
-                  value: "switch",
-                  label: "Switch 开关",
-                },
-                {
-                  value: "slider",
-                  label: "Slider 滑块",
-                },
-                {
-                  value: "time-picker",
-                  label: "TimePicker 时间选择器",
-                },
-                {
-                  value: "date-picker",
-                  label: "DatePicker 日期选择器",
-                },
-                {
-                  value: "datetime-picker",
-                  label: "DateTimePicker 日期时间选择器",
-                },
-                {
-                  value: "upload",
-                  label: "Upload 上传",
-                },
-                {
-                  value: "rate",
-                  label: "Rate 评分",
-                },
-                {
-                  value: "form",
-                  label: "Form 表单",
-                },
-              ],
-            },
-            {
-              value: "data",
-              label: "Data",
-              children: [
-                {
-                  value: "table",
-                  label: "Table 表格",
-                },
-                {
-                  value: "tag",
-                  label: "Tag 标签",
-                },
-                {
-                  value: "progress",
-                  label: "Progress 进度条",
-                },
-                {
-                  value: "tree",
-                  label: "Tree 树形控件",
-                },
-                {
-                  value: "pagination",
-                  label: "Pagination 分页",
-                },
-                {
-                  value: "badge",
-                  label: "Badge 标记",
-                },
-              ],
-            },
-            {
-              value: "notice",
-              label: "Notice",
-              children: [
-                {
-                  value: "alert",
-                  label: "Alert 警告",
-                },
-                {
-                  value: "loading",
-                  label: "Loading 加载",
-                },
-                {
-                  value: "message",
-                  label: "Message 消息提示",
-                },
-                {
-                  value: "message-box",
-                  label: "MessageBox 弹框",
-                },
-                {
-                  value: "notification",
-                  label: "Notification 通知",
-                },
-              ],
-            },
-            {
-              value: "navigation",
-              label: "Navigation",
-              children: [
-                {
-                  value: "menu",
-                  label: "NavMenu 导航菜单",
-                },
-                {
-                  value: "tabs",
-                  label: "Tabs 标签页",
-                },
-                {
-                  value: "breadcrumb",
-                  label: "Breadcrumb 面包屑",
-                },
-                {
-                  value: "dropdown",
-                  label: "Dropdown 下拉菜单",
-                },
-                {
-                  value: "steps",
-                  label: "Steps 步骤条",
-                },
-              ],
-            },
-            {
-              value: "others",
-              label: "Others",
-              children: [
-                {
-                  value: "dialog",
-                  label: "Dialog 对话框",
-                },
-                {
-                  value: "tooltip",
-                  label: "Tooltip 文字提示",
-                },
-                {
-                  value: "popover",
-                  label: "Popover 弹出框",
-                },
-                {
-                  value: "card",
-                  label: "Card 卡片",
-                },
-                {
-                  value: "carousel",
-                  label: "Carousel 走马灯",
-                },
-                {
-                  value: "collapse",
-                  label: "Collapse 折叠面板",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          value: "ziyuan",
-          label: "资源",
-          children: [
-            {
-              value: "axure",
-              label: "Axure Components",
-            },
-            {
-              value: "sketch",
-              label: "Sketch Templates",
-            },
-            {
-              value: "jiaohu",
-              label: "组件交互文档",
-            },
-          ],
-        },
-      ],
+      options: [],
       attributeDetail: {
-        fsDictQueryVOList: [
-          {
-            dictId: "1",
-            dictName: "文件分类1",
-            dictUseType: 1,
-            dictType: 1,
-            dictItemType: 1,
-            itemTextId: "itemTextId",
-            detailDTOList: [
-              {
-                dictId: "1-1",
-                id: "1-1",
-                itemText: "",
-                description: "description",
-              },
-              {
-                dictId: "1-2",
-                id: "1-2",
-                itemText: "",
-                description: "description2",
-              },
-            ],
-          },
-          {
-            dictId: "2",
-            dictName: "dictName",
-            dictUseType: 2,
-            dictType: 2,
-            dictItemType: 2,
-            itemTextId: "itemTextId",
-            detailDTOList: [
-              { id: "2-1", itemText: "", description: "description" },
-              { id: "2-2", itemText: "", description: "description2" },
-            ],
-          },
-        ],
-        filePosition: "filePosition",
-        folderPosition: "folderPosition",
-        fileSize: "fileSize",
-        folderSize: "folderSize",
-        updateTime: "updateTime",
-        updateBy: "updateBy",
-        createTime: "createTime",
-        createBy: "createBy",
+        fsDictQueryVOList: [],
+        filePosition: "",
+        folderPosition: "",
+        fileSize: "",
+        folderSize: "",
+        updateTime: "",
+        updateBy: "",
+        createTime: "",
+        createBy: "",
       },
       isPreview: false,
       dialogVisible: false,
@@ -697,12 +231,57 @@ export default {
     },
   },
   methods: {
+    setCategoryTree(value) {
+      this.options = value
+    },
+    /**
+     * @description: 外部通过ref调用此方法给 attributeDetail 赋值
+     * @return {void}
+     */
+    setAttributeDetail(value) {
+      if (value && value.id && value.fsDictQueryVOList) {
+        value.fsDictQueryVOList.forEach((element) => {
+          element.disabled = false;
+          const selected = element.detailDTOList
+            ? element.detailDTOList.filter((item) => item.isSelected)
+            : [];
+          if (this.defaultSelect.length === 0 && selected.length) {
+            this.defaultSelect.push(selected[0].id);
+          }
+          if (element.dictItemType === 1) {
+            element.itemText = selected.length ? selected[0].itemText : "";
+            element.description = selected.length
+              ? selected[0].description
+              : "";
+          } else if (element.dictItemType === 2) {
+            element.itemTextId = selected.length ? selected[0].id : "";
+            element.description = selected.length
+              ? selected[0].description
+              : "";
+          } else {
+            element.itemTextId = [];
+            selected.forEach((item) => element.itemTextId.push(item.id));
+          }
+        });
+        this.attributeDetail = value;
+      } else {
+        this.attributeDetail = {
+          fsDictQueryVOList: [],
+          filePosition: "",
+          folderPosition: "",
+          fileSize: "",
+          folderSize: "",
+          updateTime: "",
+          updateBy: "",
+          createTime: "",
+          createBy: "",
+        };
+      }
+    },
     handleAddAttrbute(value) {
-      console.log('add-attribute :>> ', value);
       this.$emit("add-attribute", value);
     },
     handleEditAttrbute(value) {
-      console.log('edit-attribute :>> ', value);
       this.$emit("edit-attribute", value);
     },
     /**
@@ -728,8 +307,6 @@ export default {
      * @return {void}
      */
     async changeItemCategory(ids, value) {
-      console.log("ids :>> ", ids);
-      console.log("value :>> ", value);
       const payload = {
         dataId: "",
         dictId: value.dictId,
@@ -950,7 +527,7 @@ export default {
       //   };
       // }
       // this.dialogVisible = true;
-      this.$refs.AddAttrPanel.editFormDefData(value)
+      this.$refs.AddAttrPanel.editFormDefData(value);
     },
     /**
      * @description: 格式化文件大小
