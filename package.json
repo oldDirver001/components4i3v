@@ -3,7 +3,7 @@
   "author": "xiongdaoqi",
   "description": "用于展示文件或者文件夹的属性",
   "keyword": "i3v 艾三维 广州君和 文件/文件夹属性 文件属性 文件夹属性",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "lib/i3v-file-attribute.common.js",
   "scripts": {
     "serve": "vue-cli-service serve",

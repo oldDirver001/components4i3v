@@ -136,12 +136,12 @@
           {{ attributeDetail.createBy }}
         </div>
       </div>
-      <div class="attr-item">
+      <!-- <div class="attr-item">
         <div class="attr-item-label">权限</div>
         <div class="attr-item-label-value">
           <i class="el-icon-setting"></i>
         </div>
-      </div>
+      </div> -->
       <div v-if="!isPreview" class="attr-item">
         <div class="attr-item-label pointer" @click="showAttributeDialog(null)">
           +自定义属性
