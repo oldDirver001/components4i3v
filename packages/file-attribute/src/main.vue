@@ -1,65 +1,64 @@
 <template>
-  <div class="i3v-file-attribute__wrapper">
-    <div class="i3v-file-attribute-file-disk">
-      <div class="right-close">
-        <!-- <svg-icon icon="close"></svg-icon> -->
-      </div>
-      <el-tabs v-model="activeTab">
-        <el-tab-pane label="属性" name="attribute">
-          <I3vAttrPanel
-            ref="I3vAttrPanel"
-            @add-attribute="handleAddAttribute"
-            @edit-attribute="handleEditAttribute"
-            @delete-attribute="handleDelAttribute"
-            @update-dictItem="handleUpdateAttribute"
-            @change-category="handleChangeCategory"
-          ></I3vAttrPanel>
-        </el-tab-pane>
-        <el-tab-pane label="关联" name="rela">
-          <el-table
-            header-cell-class-name="app-header-cell"
-            :data="associateList"
-          >
-            <el-table-column
-              label="名称"
-              prop="eventName"
-              min-width="180"
-            ></el-table-column>
-            <el-table-column
-              label="类型"
-              prop="eventType"
-              min-width="180"
-            ></el-table-column>
-            <el-table-column
-              label="负责人"
-              prop="responsibleBy"
-              min-width="180"
-            ></el-table-column>
-            <el-table-column
-              label="状态"
-              prop="status"
-              min-width="180"
-            ></el-table-column>
-          </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="操作日志" name="log">
-          <div
-            v-for="(item, index) in operationLog"
-            class="log-item"
-            :key="index"
-          >
-            <span class="log-item__value">{{ item.optContent }}</span>
-            <div class="log-item__user">
-              <el-avatar icon="el-icon-user-solid" :size="24"></el-avatar>
-              <span style="padding-left: 12px">{{
+  <div class="attribute-container">
+    <div class="right-close"></div>
+    <el-tabs v-model="activeTab" class="attribute-tabs">
+      <el-tab-pane label="属性" name="attribute">
+        <I3vAttrPanel
+          ref="I3vAttrPanel"
+          @add-attribute="handleAddAttribute"
+          @edit-attribute="handleEditAttribute"
+          @delete-attribute="handleDelAttribute"
+          @update-dictItem="handleUpdateAttribute"
+          @change-category="handleChangeCategory"
+        ></I3vAttrPanel>
+      </el-tab-pane>
+      <el-tab-pane label="操作日志" name="log">
+        <div v-for="item in operationLog" class="log-item" :key="item.id">
+          <div class="log-item-top">
+            <div class="log-item-top-left">
+              <div class="log-item-top__avatar no-avatar">
+                <span>{{
+                  item.createBy.realName || item.createBy.userName
+                }}</span>
+              </div>
+              <span class="log-item-top__name">{{
                 item.createBy.realName || item.createBy.userName
               }}</span>
             </div>
-            <div class="log-item__date">{{ item.createTime }}</div>
+            <span class="log-item-top__date">{{ item.createTime }}</span>
           </div>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+          <span class="log-item-content">{{ item.optContent }}</span>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="关联" name="associate">
+        <el-table
+          header-cell-class-name="app-header-cell"
+          :data="associateList"
+        >
+          <el-table-column
+            show-overflow-tooltip
+            label="名称"
+            prop="eventName"
+            min-width="200"
+          ></el-table-column>
+          <el-table-column
+            label="类型"
+            prop="eventType"
+            min-width="120"
+          ></el-table-column>
+          <el-table-column
+            label="负责人"
+            prop="responsibleBy"
+            min-width="120"
+          ></el-table-column>
+          <el-table-column
+            label="状态"
+            prop="status"
+            min-width="120"
+          ></el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <script>
@@ -70,30 +69,40 @@ export default {
   components: { I3vAttrPanel },
   data() {
     return {
+      fileTableHeight: 400,
+      uploadAccept: "", // 接受上传的文件类型
+      uploadAction: "", // 上传的地址
+      uploadData: {}, // 上传时附带的额外参数
+      uploadHeaders: {}, // 设置上传的请求头部
+      uploadTip: "", // 上传提示
+      uploadPercent: 0, // 上传进度信息
+      uploadFile: null, // 上传的文件
+      progressVisible: false, // 上传进度弹窗
+      breadcrumbList: [],
+      tableData: [],
+      tableLoading: true,
+      pagingData: {},
+
+      categoryDialogVisible: false, // 分类弹窗
+      folderDialogVisible: false,
+      uploadDialogVisible: false,
+      updateFolderVisible: false,
+      fileVersionVisible: false,
+      updateFolderType: 1,
+      clickItem: null,
+
+      activeName: "first",
+      computerBreadcrumb: [],
+      computerTable: [],
+      cloudTable: [],
+      cloudTableLoading: false,
+      flattenCloudTable: [],
+
+      currentItem: {}, // 选中的文件/文件夹
       activeTab: "attribute",
-      associateList: [],
-      detailDTOList: [],
-      attributeDetail: {
-        fsDictQueryVOList: [],
-        filePosition: "",
-        folderPosition: "",
-        fileSize: "",
-        folderSize: "",
-        updateTime: "",
-        updateBy: "",
-        createTime: "",
-        createBy: "",
-      },
-      // 选中的文件/文件夹
-      currentItem: {
-        createTime: "",
-      },
-      operationLog: [],
-      isPreview: false,
+      showAttribute: false,
       dialogVisible: false,
-      innerVisible: false,
       customAttribute: {
-        dictId: "",
         dataId: "", // 文件或文件夹id
         delFlag: 0,
         dictName: "", // 属性名称
@@ -115,8 +124,15 @@ export default {
           trigger: ["change", "blur"],
         },
       },
+      valueRule: {
+        required: true,
+        message: "请输入值",
+        trigger: ["change", "blur"],
+      },
+      innerVisible: false,
       attributeList: [], // 属性值列表
       currentAttr: null, // 选中的属性
+
       attrVisible: false,
       anAttr: {
         delFlag: 0, // 删除标记(0.未删除，1.删除)
@@ -132,31 +148,63 @@ export default {
           trigger: ["change", "blur"],
         },
       },
+      attributeDetail: {}, // 属性详情
+      operationLog: [], // 操作日志
+      associateList: [],
+
+      queryId: {
+        moduleId: "",
+        subjectId: "",
+        subjectColumnId: "",
+      },
+      categoryLoading: true, // 分类区域 loading
+      allItem: {
+        children: [],
+        countNum: null,
+        dictName: "全部",
+        dictType: 1,
+        id: "all",
+      },
+      firstCategoryList: [], // 一级分类列表
+      firstCategory: {}, // 选中的一级分类
+      secondCategoryList: [], // 二级分类列表
+      secondCategory: {}, // 选中的二级分类
+      queryFile: {
+        dictItemIds: "", // 二级分类id
+        folderId: "",
+        name: "",
+        pageNo: 1,
+        pageSize: 10,
+      },
+      fileList: [], // 文件列表
       // 属性的分类里默认不能删除的选中项,因为文件和文件夹一定要属于某个二级分类,但是不能明确上传时的二级分类是哪个
       // 目前规则是(后续可能会修改)：1、选中二级分类时,不能删除当前二级分类 2、选中全部时,文件属性里第一个选中的二级分类不能删除
       defaultSelect: [],
+      disabledList: [], // 不能选择的二级分类id
+      attributeLoading: false,
+      attributeLabelWidth: 76, // 属性名称的宽度
+      cloudTableHeight: 550,
     };
-  },
-  computed: {
-    // 未删除的值列表
-    attributeFilterList() {
-      return this.attributeList.filter((item) => item.delFlag !== 1);
-    },
   },
   methods: {
     handleAddAttribute(value) {
+      console.log('add-attribute :>> ', value);
       this.$emit("add-attribute", value);
     },
     handleEditAttribute(value) {
+      console.log('edit-attribute :>> ', value);
       this.$emit("edit-attribute", value);
     },
     handleDelAttribute(value) {
+      console.log('delete-attribute :>> ', value);
       this.$emit("delete-attribute", value);
     },
     handleUpdateAttribute(value) {
+      console.log('update-dictItem :>> ', value);
       this.$emit("update-dictItem", value);
     },
     handleChangeCategory(value) {
+      console.log('change-category :>> ', value);
       this.$emit("change-category", value);
     },
     /**
@@ -193,340 +241,143 @@ export default {
       }
     },
     /**
-     * @description: 外部通过ref调用此方法给 attributeDetail 赋值 别删了
+     * @description: 外部通过ref调用此方法给 attributeDetail 赋值
      * @return {void}
      */
     setAttributeDetail(value) {
       this.$refs.I3vAttrPanel.setAttributeDetail(value)
     },
-    /**
-     * @description: 外部通过ref调用此方法给 attributeDetail 赋值 别删了
-     * @return {void}
-     */
-    setCategoryTree(value) {
-      this.$refs.I3vAttrPanel.setCategoryTree(value)
-    },
   },
 };
 </script>
-<style lang="scss">
-.i3v-file-attribute__wrapper {
+<style scoped lang="scss">
+::v-deep .el-button {
+  border-radius: 5px;
+}
+
+.attribute-container {
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  overflow-x: auto;
+  flex: 1;
+  min-width: 400px;
+  padding: 20px;
+  border-radius: 5px 5px 0 0;
+  margin-left: 14px;
+  background-color: #fff;
+  position: relative;
 
-  ::v-deep .el-button {
-    border-radius: 5px;
-  }
-
-  .i3v-file-attribute-file-disk {
-    box-sizing: border-box;
-    flex: 1;
-    min-width: 400px;
-    border-radius: 5px 5px 0 0;
-    background-color: #fff;
-    position: relative;
-
-    .right-close {
-      position: absolute;
-      z-index: 1;
-      top: 30px;
-      right: 30px;
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-
-      &:hover {
-        .svg-icon {
-          color: #1664ff !important;
-        }
-      }
-    }
-
-    ::v-deep .el-tabs {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-
-      .el-tabs__content {
-        flex: 1;
-
-        .el-tab-pane {
-          height: 100%;
-          overflow: auto;
-        }
-      }
-    }
-
-    .attribute-wrapper {
-      height: 70%;
-      overflow: auto;
-
-      .attr-item {
-        font-size: 14px;
-        display: flex;
-        border-top: 1px solid #f7f7f7;
-        border-bottom: 1px solid #f7f7f7;
-
-        .attr-item-label {
-          flex-shrink: 0;
-          box-sizing: border-box;
-          width: 100px;
-          min-height: 32px;
-          padding: 6px 8px;
-          text-align: center;
-          background-color: #f2f2f2;
-
-          > span {
-            line-height: 20px;
-            word-break: break-all;
-          }
-        }
-
-        .attr-item-label-value {
-          box-sizing: border-box;
-          width: calc(100% - 100px);
-          min-height: 32px;
-          padding: 0 6px;
-          background-color: #fff;
-          display: flex;
-          align-items: center;
-          position: relative;
-
-          &.custom-attribute {
-            padding-right: 34px;
-          }
-
-          > span {
-            word-break: break-all;
-          }
-
-          &:hover {
-            .attr-action {
-              display: block;
-            }
-          }
-
-          .descr {
-            padding-left: 6px;
-            color: #c0c4cc;
-          }
-
-          .attr-action {
-            display: none;
-            position: absolute;
-            top: calc(50% - 8px);
-            right: 6px;
-            font-size: 16px;
-            cursor: pointer;
-
-            &.attr-edit {
-              right: 28px;
-            }
-          }
-        }
-      }
-    }
-
-    .associate-wrapper {
-      height: 30%;
-      overflow: auto;
-    }
-
-    .log-item {
-      display: flex;
-      align-items: center;
-      font-size: 16px;
-      font-weight: 500;
-      color: #ababab;
-      padding-right: 16px;
-      padding-bottom: 28px;
-      margin-bottom: 12px;
-      position: relative;
-
-      .log-item__value {
-        flex: 1;
-        font-size: 14px;
-        color: #666;
-        word-break: break-all;
-      }
-
-      .log-item__user {
-        display: flex;
-        align-items: center;
-        padding-left: 12px;
-      }
-
-      .log-item__date {
-        position: absolute;
-        right: 16px;
-        bottom: 0;
-      }
-    }
-  }
-}
-.fileattr-dialog-content {
-  padding: 0 30px;
-
-  .attr-value {
+  .right-close {
+    position: absolute;
+    z-index: 1;
+    top: 30px;
+    right: 30px;
+    height: 20px;
+    cursor: pointer;
     display: flex;
-    align-items: center;
-  }
-}
+    flex-direction: row-reverse;
 
-.inner-dialog-content {
-  padding: 20px 30px;
-  display: flex;
-
-  .attr-list {
-    box-sizing: border-box;
-    width: 240px;
-    height: 240px;
-    padding: 8px;
-    border: 1px solid #f7f7f7;
-    overflow-y: auto;
-
-    .attr-list-row {
-      display: flex;
-      border-radius: 5px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #344563;
-
-      &.is-active {
-        color: #fff;
-        background-color: #1664ff;
-      }
-
-      .attr-list-item {
-        box-sizing: border-box;
-        width: 50%;
-        padding: 6px 8px;
-
-        > span {
-          line-height: 20px;
-          word-break: break-all;
-        }
-
-        &.border-right {
-          border-right: 1px solid #f7f7f7;
-        }
+    i {
+      &:hover {
+        color: var(--color-primary) !important;
       }
     }
   }
 
-  .attr-button {
-    margin-left: 24px;
+  ::v-deep(.el-tabs) {
+    height: 100%;
     display: flex;
     flex-direction: column;
 
-    .el-button {
-      margin-bottom: 8px;
+    .el-tabs__nav-wrap::after {
+      height: 0;
     }
 
-    .el-button + .el-button {
-      margin-left: 0;
+    .el-tabs__content {
+      flex: 1;
+
+      .el-tab-pane {
+        height: 100%;
+        overflow: auto;
+      }
     }
   }
-}
-</style>
 
-<style lang="scss">
-@mixin popover($min-width: 80px) {
-  box-sizing: border-box;
-  min-width: $min-width !important;
-  padding: 10px 8px !important;
-  border-radius: 5px;
-  border: 1px solid #d3dae6;
-  box-shadow: 0px 0px 5px 2px rgba(94, 108, 132, 0.2);
-}
-
-@mixin popover-item {
-  height: 32px;
-  line-height: 32px;
-  padding: 0 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #344563;
-  text-align: center;
-
-  &.disabled {
-    color: #abb4c4;
-    cursor: not-allowed;
+  .associate-wrapper {
+    height: 30%;
+    overflow: auto;
   }
 
-  &:not(.del):not(.disabled):hover {
-    color: #fff;
-    background-color: #1664ff;
+  .log-item {
+    padding: 30px 0 28px;
+    border-bottom: 1px solid #e6ebf2;
+
+    &:last-child {
+      border: none;
+    }
+
+    .log-item-top {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .log-item-top-left {
+        display: flex;
+        align-items: center;
+
+        .log-item-top__avatar {
+          width: 16px;
+          height: 16px;
+          border-radius: 5px;
+
+          &.no-avatar {
+            font-size: 12px;
+            font-weight: 400;
+            color: #fff;
+            line-height: 1;
+            background-color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            span {
+              transform: scale(0.83);
+            }
+          }
+        }
+
+        .log-item-top__name {
+          padding-left: 8px;
+        }
+      }
+
+      .log-item-top__date {
+        color: #cfd7e6;
+      }
+    }
+
+    .log-item-content {
+      padding-left: 24px;
+      word-break: break-all;
+    }
+
+    .log-item__value {
+      flex: 1;
+      font-size: 14px;
+      color: #666;
+      word-break: break-all;
+    }
+
+    .log-item__user {
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+    }
+
+    .log-item__date {
+      position: absolute;
+      right: 16px;
+      bottom: 0;
+    }
   }
-
-  &.del:hover {
-    color: #ff5733;
-  }
-}
-.category-popover {
-  @include popover(96px);
-  width: fit-content !important;
-}
-
-.category-popover-item {
-  @include popover-item;
-  box-sizing: border-box;
-  text-align: left;
-  padding: 0 12px;
-  font-size: 14px;
-  cursor: pointer;
-}
-</style>
-<style lang="scss">
-.ss-dialog .el-dialog {
-  border-radius: 10px;
-}
-
-.ss-dialog .el-dialog .el-dialog__header {
-  box-sizing: content-box;
-  height: 24px;
-  padding: 28px 0 21px;
-  margin: 0 30px 0 30px;
-  border-bottom: 1px solid #e6ebf2;
-}
-
-.ss-dialog.no-header-bottom .el-dialog .el-dialog__header {
-  border-bottom-color: #fff;
-}
-
-.ss-dialog.no-header .el-dialog .el-dialog__header {
-  display: none;
-}
-
-.ss-dialog .el-dialog .el-dialog__header .el-dialog__title {
-  line-height: 24px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #344563;
-}
-
-.ss-dialog .el-dialog .el-dialog__header .el-dialog__headerbtn {
-  top: 30px;
-  right: 30px;
-  font-size: 20px;
-}
-
-.ss-dialog .el-dialog .el-dialog__header .el-dialog__headerbtn i {
-  display: block;
-}
-
-.ss-dialog .el-dialog .el-dialog__body {
-  padding: 0;
-}
-
-.ss-dialog .el-dialog .el-dialog__footer {
-  min-height: 90px;
-  padding: 26px 30px 24px;
-  background-color: #f5f7fa;
-  border-radius: 0 0 10px 10px;
 }
 </style>

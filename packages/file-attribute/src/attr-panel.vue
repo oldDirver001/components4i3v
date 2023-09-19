@@ -1,150 +1,146 @@
 <template>
   <div class="i3v-file-attribute-panel">
     <div class="attribute-wrapper" ref="attributeWrapper">
-      <div class="attr-item">
-        <div class="attr-item-label"><span>文件来源</span></div>
-        <div class="attr-item-label-value">
-          <span>{{
-            attributeDetail.filePosition || attributeDetail.folderPosition
-          }}</span>
+      <div class="attribute-header">
+        <div class="resize-box" ref="resizeBox">
+          <div class="resize-box-cell one-line" ref="resizeLeft">名称</div>
+          <div class="resize-box-div" ref="resizeDiv"></div>
+          <div class="resize-box-cell-right">值</div>
         </div>
+        <i
+          style="display: inline-block; margin: 0 20px; cursor: pointer"
+          class="el-icon-plus"
+          title="添加自定义属性"
+          @click="showAttributeDialog(null)"
+        ></i>
+        <i
+          style="display: inline-block; cursor: not-allowed"
+          class="el-icon-s-tools"
+          title="权限"
+        ></i>
       </div>
-      <template v-if="attributeDetail.fsDictQueryVOList">
+      <div class="attribute-row">
+        <span
+          class="one-line"
+          :style="`width: ${attributeLabelWidth}px;padding-left: 10px;`"
+          >文件来源：</span
+        >
+        <span class="attribute-row__content">{{
+          attributeDetail.filePosition || attributeDetail.folderPosition
+        }}</span>
+      </div>
+      <template v-for="item in attributeDetail.fsDictQueryVOList">
         <div
-          v-for="item in attributeDetail.fsDictQueryVOList"
-          class="attr-item"
+          v-if="item.dictUseType === 1"
+          class="file-attribute"
           :key="item.dictId"
         >
-          <div class="attr-item-label">{{ item.dictName }}</div>
           <div
-            class="attr-item-label-value"
-            :class="{
-              'custom-attribute': item.dictUseType === 2 && item.dictType === 2,
-            }"
+            class="file-attribute__label one-line"
+            :style="`width: ${attributeLabelWidth}px;`"
           >
-            <!-- dictType 1默认, 2自定义 -->
-            <!-- dictUseType 1分类, 2属性 -->
-            <template v-if="item.dictUseType === 1">
-              <!-- <el-select
-                v-model="item.itemTextId"
-                v-defaultSelect="[defaultSelect, item.itemTextId]"
-                multiple
-                placeholder="请选择"
-                size="mini"
-                style="width: 100%"
-                :disabled="isPreview"
-                @change="changeItemCategory($event, item)"
-              >
-                <el-option
-                  v-for="site in item.detailDTOList"
-                  :key="site.id"
-                  :label="site.itemText"
-                  :value="site.id"
-                  :disabled="defaultSelect.includes(site.id)"
-                ></el-option>
-              </el-select> -->
-              <el-cascader
-                v-model="item.itemTextId"
-                style="width: 100%"
-                :disabled="isPreview"
-                :options="options"
-                :props="{ emitPath: false, multiple: true, checkStrictly: true, value: 'id', label: 'itemText' }"
-                clearable
-                size="mini"
-                @change="changeItemCategory($event, item)"
-              ></el-cascader>
-              <span class="descr">{{ item.description }}</span>
-            </template>
-            <!-- dictUseType 1分类, 2属性 -->
-            <!-- dictItemType 1自由输入, 2固定值 -->
-            <template v-if="item.dictUseType === 2 && item.dictItemType === 2">
-              <el-select
-                v-model="item.itemTextId"
-                placeholder="请选择"
-                size="mini"
-                style="width: 140px"
-                :disabled="isPreview"
-                @change="changeAttrValue($event, item)"
-              >
-                <el-option
-                  v-for="site in item.detailDTOList"
-                  :key="site.id"
-                  :label="site.itemText"
-                  :value="site.id"
-                ></el-option>
-              </el-select>
-              <span class="descr">{{ item.description }}</span>
-            </template>
-            <!-- dictUseType 1分类, 2属性 -->
-            <!-- dictItemType 1自由输入, 2固定值 -->
-            <template v-if="item.dictUseType === 2 && item.dictItemType === 1">
-              <span>{{ item.detailDTOList[0].itemText }}</span>
-            </template>
-            <!-- dictType 1默认, 2自定义 -->
-            <template
-              v-if="
-                item.dictType === 2 && item.dictItemType !== 0 && !isPreview
-              "
+            {{ item.dictName }}：
+          </div>
+          <div class="file-attribute__content">
+            <el-checkbox-group
+              v-model="item.itemTextId"
+              class="xs-checkbox-group"
+              size="small"
+              :disabled="isPreview"
+              @change="changeCheckbox($event, item)"
             >
-              <i
-                class="el-icon-edit attr-action attr-edit"
-                title="编辑"
-                @click="showAttributeDialog(item)"
-              ></i>
-              <i
-                class="el-icon-delete attr-action"
-                title="删除"
-                @click="deleteAttribute(item)"
-              ></i>
-            </template>
+              <el-checkbox
+                v-for="site in item.detailDTOList"
+                border
+                :key="site.id"
+                :label="site.id"
+                :disabled="
+                  defaultSelect.includes(site.id) ||
+                  disabledList.includes(site.id)
+                "
+                >{{ site.itemText }}</el-checkbox
+              >
+            </el-checkbox-group>
+          </div>
+        </div>
+        <div
+          v-if="item.dictUseType === 2"
+          class="attribute-row"
+          :key="item.dictId"
+          :class="{
+            'attribute-row-2': item.dictItemType === 2,
+            'custom-attribute': !isPreview && item.dictType === 2,
+          }"
+        >
+          <span
+            class="one-line"
+            :style="`width: ${attributeLabelWidth}px;padding-left: 10px;`"
+            >{{ item.dictName }}：</span
+          >
+          <span v-if="item.dictItemType === 1" class="attribute-row__content">{{
+            item.itemText
+          }}</span>
+          <span v-if="item.dictItemType === 2" class="attribute-row__content">
+            <el-select
+              v-model="item.itemTextId"
+              placeholder="请选择"
+              popper-class="xs-select"
+              size="small"
+              style="width: 180px"
+              :disabled="isPreview"
+              @change="changeAttrValue($event, item)"
+            >
+              <el-option label="空值" value=""></el-option>
+              <el-option
+                v-for="site in item.detailDTOList"
+                :key="site.id"
+                :label="site.itemText"
+                :value="site.id"
+              ></el-option>
+            </el-select>
+            <span class="descr">{{ item.description }}</span>
+          </span>
+          <div
+            v-if="!isPreview && item.dictType === 2"
+            class="custom-attribute-icon"
+          >
+            <!-- <svg-icon
+                  class="pointer"
+                  icon="xs-icon-edit"
+                  color="#8997b0"
+                  style="margin-right: 16px"
+                  @click.native="showAttributeDialog(item)"
+                ></svg-icon>
+                <svg-icon
+                  class="pointer"
+                  icon="xs-icon-delete"
+                  color="#8997b0"
+                  @click.native="deleteAttribute(item)"
+                ></svg-icon> -->
+            <i
+              class="el-icon-edit-outline"
+              style="display: inline-block; margin-right: 16px"
+              @click="showAttributeDialog(item)"
+            ></i>
+            <i class="el-icon-delete" @click="deleteAttribute(item)"></i>
           </div>
         </div>
       </template>
-      <div class="attr-item">
-        <div class="attr-item-label">文件大小</div>
-        <div class="attr-item-label-value">
-          {{
-            formatFileSize(
-              attributeDetail.fileSize || attributeDetail.folderSize
-            )
-          }}
+      <div class="file-info">
+        <div class="file-info-row">
+          文件大小：{{ attributeDetail.fileSize || attributeDetail.folderSize }}
         </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">更新时间</div>
-        <div class="attr-item-label-value">
-          <!-- {{ Object.dayjs(attributeDetail.updateTime) }} -->
-          {{ attributeDetail.updateTime }}
+        <div class="file-info-item">
+          更新时间：{{ attributeDetail.updateTime }}
         </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">更新人</div>
-        <div class="attr-item-label-value">
-          {{ attributeDetail.updateBy }}
+        <div class="file-info-item">
+          更新人：{{ attributeDetail?.updateBy }}
         </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">创建时间</div>
-        <div class="attr-item-label-value">
-          <!-- {{ Object.dayjs(attributeDetail.createTime) }} -->
-          {{ attributeDetail.createTime }}
+        <div class="file-info-item">
+          创建时间：{{ attributeDetail.createTime }}
         </div>
-      </div>
-      <div class="attr-item">
-        <div class="attr-item-label">创建人</div>
-        <div class="attr-item-label-value">
-          {{ attributeDetail.createBy }}
-        </div>
-      </div>
-      <!-- <div class="attr-item">
-        <div class="attr-item-label">权限</div>
-        <div class="attr-item-label-value">
-          <i class="el-icon-setting"></i>
-        </div>
-      </div> -->
-      <div v-if="!isPreview" class="attr-item">
-        <div class="attr-item-label pointer" @click="showAttributeDialog(null)">
-          +自定义属性
+        <div class="file-info-item">
+          创建人：{{ attributeDetail?.createBy }}
         </div>
       </div>
     </div>
@@ -156,7 +152,7 @@
   </div>
 </template>
 <script>
-import { cloneDeep, pick } from "lodash";
+import { cloneDeep } from "lodash";
 import AddAttrPanel from "./add-attr-panel.vue";
 
 export default {
@@ -222,6 +218,8 @@ export default {
       // 属性的分类里默认不能删除的选中项,因为文件和文件夹一定要属于某个二级分类,但是不能明确上传时的二级分类是哪个
       // 目前规则是(后续可能会修改)：1、选中二级分类时,不能删除当前二级分类 2、选中全部时,文件属性里第一个选中的二级分类不能删除
       defaultSelect: [],
+      attributeLabelWidth: 76, // 属性名称的宽度
+      disabledList: [], // 不能选择的二级分类id
     };
   },
   computed: {
@@ -231,8 +229,52 @@ export default {
     },
   },
   methods: {
+    /**
+     * @description: 拖动改变属性名称的宽度
+     * @return {void}
+     */
+    setResize() {
+      let leftDiv = this.$refs.resizeLeft;
+      const resizeDom = this.$refs.resizeDiv;
+      resizeDom.onmousedown = (e) => {
+        let startX = e.clientX;
+        const resizeLeft = leftDiv.offsetWidth;
+        const maxWidth = this.$refs.resizeBox.offsetWidth;
+        document.onmousemove = (e) => {
+          const endX = e.clientX;
+          let offsetWidth = endX - startX + resizeLeft;
+          if (offsetWidth < 30) {
+            offsetWidth = 30;
+          }
+          if (offsetWidth > maxWidth - 60) {
+            offsetWidth = maxWidth - 60;
+          }
+          leftDiv.style.width = `${offsetWidth}px`;
+          this.attributeLabelWidth = offsetWidth;
+        };
+        document.onmouseup = () => {
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+        return false;
+      };
+    },
+    /**
+     * @description: 修改文件/文件夹分类
+     * @param {Array} ids 选择的分类
+     * @param {Object} value 一级分类
+     * @return {void}
+     */
+    async changeCheckbox(ids, value) {
+      const payload = {
+        dataId: '',
+        dictId: value.dictId,
+        dictItemIds: ids,
+      };
+      this.$emit("change-category", payload);
+    },
     setCategoryTree(value) {
-      this.options = value
+      this.options = value;
     },
     /**
      * @description: 外部通过ref调用此方法给 attributeDetail 赋值
@@ -277,6 +319,7 @@ export default {
           createBy: "",
         };
       }
+      this.setResize();
     },
     handleAddAttrbute(value) {
       this.$emit("add-attribute", value);
@@ -301,18 +344,6 @@ export default {
       attr.itemTextId = pre ? pre.id : "";
       attr.description = pre ? pre.description : "";
       this.$emit("update-dictItem", payload);
-    },
-    /**
-     * @description: 修改文件/文件夹分类
-     * @return {void}
-     */
-    async changeItemCategory(ids, value) {
-      const payload = {
-        dataId: "",
-        dictId: value.dictId,
-        dictItemIds: ids,
-      };
-      this.$emit("change-category", payload);
     },
     /**
      * @description: 删除属性
@@ -422,76 +453,6 @@ export default {
       this.currentAttr = null;
     },
     /**
-     * @description: 确定添加 自定义属性
-     * @return {void}
-     */
-    confirmAddAttr() {
-      this.$refs.customAttribute.validate(async (valid) => {
-        if (!valid) {
-          return;
-        }
-        if (
-          this.customAttribute.dictItemType === 2 &&
-          this.customAttribute.detailDTOS.length === 0
-        ) {
-          return this.$message.warning("值列表不能为空");
-        }
-        if (!this.customAttribute.dictId) {
-          // 新增自定义属性
-          let payload = {
-            dataId: this.customAttribute.dataId,
-            delFlag: 0,
-            dictType: 2,
-            dictName: this.customAttribute.dictName,
-            dictItemType: this.customAttribute.dictItemType,
-          };
-          if (this.customAttribute.dictItemType === 1) {
-            payload.detailDTOS = [
-              {
-                delFlag: 0,
-                id: "",
-                isSelected: 1,
-                itemText: this.customAttribute.itemText,
-                description: "",
-              },
-            ];
-          } else {
-            payload.detailDTOS = cloneDeep(this.customAttribute.detailDTOS);
-            payload.detailDTOS.forEach((element) => {
-              element.id.startsWith("attr-") && (element.id = "");
-            });
-          }
-          this.$emit("add-attribute", payload);
-        } else {
-          // 编辑自定义属性
-          let payload;
-          if (this.customAttribute.dictItemType === 1) {
-            payload = pick(this.customAttribute, [
-              "dataId",
-              "dictId",
-              "dictName",
-              "dictItemType",
-            ]);
-            payload.detailDTOS = cloneDeep(this.customAttribute.detailDTOS);
-            payload.detailDTOS[0].itemText = this.customAttribute.itemText;
-          } else {
-            payload = pick(this.customAttribute, [
-              "dataId",
-              "dictId",
-              "dictName",
-              "dictItemType",
-            ]);
-            payload.detailDTOS = cloneDeep(this.customAttribute.detailDTOS);
-            payload.detailDTOS.forEach((element) => {
-              element.id.startsWith("attr-") && (element.id = "");
-            });
-          }
-          this.$emit("edit-attribute", payload);
-        }
-        this.dialogVisible = false;
-      });
-    },
-    /**
      * @description: 显示 属性列表 弹窗
      * @return {void}
      */
@@ -505,28 +466,6 @@ export default {
      * @return {void}
      */
     showAttributeDialog(value) {
-      // if (value) {
-      //   let obj = pick(value, ["id", "dictId", "dictName", "dictItemType"]);
-      //   obj.dataId = "";
-      //   obj.itemText =
-      //     value.dictItemType === 1 ? value.detailDTOList[0].itemText : "";
-      //   obj.description = "";
-      //   obj.detailDTOS = cloneDeep(value.detailDTOList);
-      //   this.customAttribute = obj;
-      // } else {
-      //   this.customAttribute = {
-      //     dataId: "",
-      //     delFlag: 0,
-      //     dictType: 2, // 1默认, 2自定义
-      //     dictId: "",
-      //     dictName: "",
-      //     dictItemType: "",
-      //     itemText: "",
-      //     description: "",
-      //     detailDTOS: [],
-      //   };
-      // }
-      // this.dialogVisible = true;
       this.$refs.AddAttrPanel.editFormDefData(value);
     },
     /**
@@ -552,9 +491,136 @@ export default {
 };
 </script>
 <style lang="scss">
+.attribute-header {
+  width: 100%;
+  height: 32px;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 16px;
+  background-color: #fafbfc;
+  display: flex;
+  align-items: center;
+
+  .resize-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    .resize-box-cell {
+      width: 76px;
+      padding-left: 10px;
+    }
+
+    .resize-box-div {
+      width: 2px;
+      height: 12px;
+      border-radius: 2px;
+      background-color: #e6ebf2;
+      cursor: col-resize;
+    }
+
+    .resize-box-cell-right {
+      box-sizing: border-box;
+      flex: 1;
+      padding-left: 40px;
+    }
+  }
+}
 .attribute-wrapper {
-  height: 70%;
   overflow: auto;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-regular);
+
+  .attribute-row {
+    line-height: 20px;
+    border-radius: 5px;
+    margin-bottom: 16px;
+    display: flex;
+    position: relative;
+
+    &.custom-attribute {
+      line-height: 32px;
+      padding-right: 56px;
+
+      &:hover {
+        background-color: #fafbfc;
+
+        .custom-attribute-icon {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .custom-attribute-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: none;
+      }
+    }
+
+    .attribute-row__content {
+      flex: 1;
+      word-break: break-all;
+
+      .descr {
+        padding-left: 16px;
+        color: #9facc2;
+      }
+    }
+  }
+
+  .file-attribute {
+    display: flex;
+
+    .file-attribute__label {
+      width: fit-content;
+      line-height: 32px;
+      padding-left: 10px;
+    }
+
+    .file-attribute__content {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+
+      .xs-checkbox-group {
+        .el-checkbox {
+          margin: 0 16px 16px 0;
+        }
+
+        .el-checkbox.is-bordered {
+          border-radius: 5px;
+        }
+
+        .el-checkbox.is-bordered + .el-checkbox.is-bordered {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+
+  .file-info {
+    box-sizing: border-box;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fafbfc;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    .file-info-row {
+      width: 100%;
+    }
+
+    .file-info-item {
+      width: 50%;
+      margin-top: 12px;
+      word-break: break-all;
+    }
+  }
 
   .attr-item {
     font-size: 14px;
@@ -619,14 +685,6 @@ export default {
         }
       }
     }
-  }
-}
-.fileattr-dialog-content {
-  padding: 0 30px;
-
-  .attr-value {
-    display: flex;
-    align-items: center;
   }
 }
 </style>

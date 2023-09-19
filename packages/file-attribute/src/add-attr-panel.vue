@@ -9,7 +9,7 @@
       :visible.sync="dialogVisible"
       @close="handleClose"
     >
-      <div class="fileattr-dialog-content">
+      <div class="dialog-content">
         <el-form
           label-width="100px"
           ref="customAttribute"
@@ -229,18 +229,6 @@ export default {
   },
   methods: {
     editFormDefData(value) {
-      console.log('value :>> ', value);
-      // let obj = pick(value, ["id", "dictId", "dictName", "dictItemType"]);
-      // obj.dataId = '';
-      // obj.itemText =
-      //   value.dictItemType === 1 ? value.detailDTOList[0].itemText : "";
-      // obj.description = "";
-      // obj.detailDTOS = cloneDeep(value.detailDTOList);
-      // this.dialogVisible = true;
-      // this.$nextTick(() => {
-      //   this.customAttribute = obj;
-      // })
-      //
       let obj = {};
       if (value) {
         obj = pick(value, ["id", "dictId", "dictName", "dictItemType"]);
@@ -266,7 +254,6 @@ export default {
       this.dialogVisible = true;
       this.$nextTick(() => {
         this.customAttribute = obj;
-        console.log('this.customAttribute :>> ', this.customAttribute);
       });
     },
     showDialog() {
@@ -458,12 +445,68 @@ export default {
 };
 </script>
 <style lang="scss">
-.fileattr-dialog-content {
+.dialog-content {
   padding: 0 30px;
 
   .attr-value {
     display: flex;
     align-items: center;
+  }
+}
+
+.inner-dialog-content {
+  padding: 20px 30px;
+  display: flex;
+
+  .attr-list {
+    box-sizing: border-box;
+    width: 240px;
+    height: 240px;
+    padding: 8px;
+    border: 1px solid #f7f7f7;
+    overflow-y: auto;
+
+    .attr-list-row {
+      display: flex;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #344563;
+
+      &.is-active {
+        color: #fff;
+        background-color: var(--color-primary);
+      }
+
+      .attr-list-item {
+        box-sizing: border-box;
+        width: 50%;
+        padding: 6px 8px;
+
+        > span {
+          line-height: 20px;
+          word-break: break-all;
+        }
+
+        &.border-right {
+          border-right: 1px solid #f7f7f7;
+        }
+      }
+    }
+  }
+
+  .attr-button {
+    margin-left: 24px;
+    display: flex;
+    flex-direction: column;
+
+    .el-button {
+      margin-bottom: 8px;
+    }
+
+    .el-button + .el-button {
+      margin-left: 0;
+    }
   }
 }
 </style>

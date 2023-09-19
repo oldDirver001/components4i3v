@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-22 16:47:29
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-11 17:39:00
+ * @LastEditTime: 2023-09-18 17:40:41
  * @Description: 请输入
  */
 import Vue from "vue";
@@ -32,6 +32,8 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   Cascader,
+  Checkbox,
+  CheckboxGroup,
 } from "element-ui";
 import '@/assets/scss/global.scss';
 
@@ -65,6 +67,8 @@ Vue.use(Main);
 Vue.use(Breadcrumb);
 Vue.use(BreadcrumbItem);
 Vue.use(Cascader);
+Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
 
 Vue.use(FileAttribute);
 Vue.use(AttrPanel);
