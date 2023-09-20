@@ -17,9 +17,7 @@
           <div class="log-item-top">
             <div class="log-item-top-left">
               <div class="log-item-top__avatar no-avatar">
-                <span>{{
-                  item.createBy.realName || item.createBy.userName
-                }}</span>
+                <span>{{ getFirstChat(item.createBy.realName || item.createBy.userName) }}</span>
               </div>
               <span class="log-item-top__name">{{
                 item.createBy.realName || item.createBy.userName
@@ -188,23 +186,23 @@ export default {
   },
   methods: {
     handleAddAttribute(value) {
-      console.log('add-attribute :>> ', value);
+      console.log("add-attribute :>> ", value);
       this.$emit("add-attribute", value);
     },
     handleEditAttribute(value) {
-      console.log('edit-attribute :>> ', value);
+      console.log("edit-attribute :>> ", value);
       this.$emit("edit-attribute", value);
     },
     handleDelAttribute(value) {
-      console.log('delete-attribute :>> ', value);
+      console.log("delete-attribute :>> ", value);
       this.$emit("delete-attribute", value);
     },
     handleUpdateAttribute(value) {
-      console.log('update-dictItem :>> ', value);
+      console.log("update-dictItem :>> ", value);
       this.$emit("update-dictItem", value);
     },
     handleChangeCategory(value) {
-      console.log('change-category :>> ', value);
+      console.log("change-category :>> ", value);
       this.$emit("change-category", value);
     },
     /**
@@ -245,7 +243,18 @@ export default {
      * @return {void}
      */
     setAttributeDetail(value) {
-      this.$refs.I3vAttrPanel.setAttributeDetail(value)
+      this.$refs.I3vAttrPanel.setAttributeDetail(value);
+    },
+    /**
+     * @description: 获取字符串的第一个字符
+     * @param {String} str 字符串
+     * @return {String} 第一个字符
+     */
+    getFirstChat(str) {
+      if (typeof str !== "string") {
+        return {};
+      }
+      return str.charAt(0);
     },
   },
 };

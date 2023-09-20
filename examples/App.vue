@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 16:44:13
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-19 10:36:34
+ * @LastEditTime: 2023-09-20 17:19:09
  * @Description: 请输入
 -->
 <template>
@@ -184,7 +184,7 @@ export default {
                 pid: null,
                 itemText: "2",
                 description: "2",
-                isSelected: 0,
+                isSelected: 1,
                 dictType: null,
                 delFlag: 0,
               },

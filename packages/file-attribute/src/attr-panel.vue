@@ -128,19 +128,20 @@
       </template>
       <div class="file-info">
         <div class="file-info-row">
-          文件大小：{{ attributeDetail.fileSize || attributeDetail.folderSize }}
+          文件大小：{{ formatFileSize(attributeDetail.fileSize ||
+                attributeDetail.folderSize) }}
         </div>
         <div class="file-info-item">
           更新时间：{{ attributeDetail.updateTime }}
         </div>
         <div class="file-info-item">
-          更新人：{{ attributeDetail?.updateBy }}
+          更新人：{{ attributeDetail.updateBy }}
         </div>
         <div class="file-info-item">
           创建时间：{{ attributeDetail.createTime }}
         </div>
         <div class="file-info-item">
-          创建人：{{ attributeDetail?.createBy }}
+          创建人：{{ attributeDetail.createBy }}
         </div>
       </div>
     </div>
@@ -467,6 +468,7 @@ export default {
      */
     showAttributeDialog(value) {
       this.$refs.AddAttrPanel.editFormDefData(value);
+      // this.$refs.AddAttrPanel.dialogVisible = true;
     },
     /**
      * @description: 格式化文件大小

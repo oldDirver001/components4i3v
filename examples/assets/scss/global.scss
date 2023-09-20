@@ -2,3 +2,51 @@
   height: 100%;
   overflow-x: auto!important;
 }
+
+.ss-dialog .el-dialog {
+  border-radius: 10px;
+}
+
+.ss-dialog .el-dialog .el-dialog__header {
+  box-sizing: content-box;
+  height: 24px;
+  padding: 28px 0 21px;
+  margin: 0 30px 0 30px;
+  border-bottom: 1px solid #e6ebf2;
+}
+
+.ss-dialog.no-header-bottom .el-dialog .el-dialog__header {
+  border-bottom-color: #fff;
+}
+
+.ss-dialog.no-header .el-dialog .el-dialog__header {
+  display: none;
+}
+
+.ss-dialog .el-dialog .el-dialog__header .el-dialog__title {
+  line-height: 24px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #344563;
+}
+
+.ss-dialog .el-dialog .el-dialog__header .el-dialog__headerbtn {
+  top: 30px;
+  right: 30px;
+  font-size: 20px;
+}
+
+.ss-dialog .el-dialog .el-dialog__header .el-dialog__headerbtn i {
+  display: block;
+}
+
+.ss-dialog .el-dialog .el-dialog__body {
+  padding: 0;
+}
+
+.ss-dialog .el-dialog .el-dialog__footer {
+  min-height: 90px;
+  padding: 26px 30px 24px;
+  background-color: #f5f7fa;
+  border-radius: 0 0 10px 10px;
+}
