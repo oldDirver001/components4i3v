@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-22 16:47:29
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-18 17:40:41
+ * @LastEditTime: 2023-09-21 09:53:04
  * @Description: 请输入
  */
 import Vue from "vue";
@@ -34,8 +34,10 @@ import {
   Cascader,
   Checkbox,
   CheckboxGroup,
+  Message,
 } from "element-ui";
 import '@/assets/scss/global.scss';
+import "@/assets/scss/public.css";
 
 import FileAttribute from "../packages/file-attribute/index";
 import AttrPanel from "../packages/attr-panel/index";
@@ -76,6 +78,7 @@ Vue.use(ScrollPanel);
 
 Vue.prototype.$ELEMENT = { size: 'small' };
 Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$message = Message;
 
 Vue.config.productionTip = false;
 

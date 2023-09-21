@@ -12,7 +12,7 @@
           @change-category="handleChangeCategory"
         ></I3vAttrPanel>
       </el-tab-pane>
-      <el-tab-pane label="操作日志" name="log">
+      <el-tab-pane label="日志" name="log">
         <div v-for="item in operationLog" class="log-item" :key="item.id">
           <div class="log-item-top">
             <div class="log-item-top-left">
@@ -32,6 +32,7 @@
         <el-table
           header-cell-class-name="app-header-cell"
           :data="associateList"
+          border
         >
           <el-table-column
             show-overflow-tooltip
@@ -42,17 +43,17 @@
           <el-table-column
             label="类型"
             prop="eventType"
-            min-width="120"
+            min-width="80"
           ></el-table-column>
           <el-table-column
             label="负责人"
             prop="responsibleBy"
-            min-width="120"
+            min-width="100"
           ></el-table-column>
           <el-table-column
             label="状态"
             prop="status"
-            min-width="120"
+            min-width="80"
           ></el-table-column>
         </el-table>
       </el-tab-pane>
@@ -388,5 +389,13 @@ export default {
       bottom: 0;
     }
   }
+}
+</style>
+<style>
+.app-header-cell {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-regular);
+  background-color: #f5f7fa !important;
 }
 </style>
