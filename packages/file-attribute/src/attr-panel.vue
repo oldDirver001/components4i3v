@@ -8,16 +8,17 @@
           <div class="resize-box-cell-right">值</div>
         </div>
         <i
+          v-if="attributeDetail.fileType === '2'"
           style="display: inline-block; margin: 0 20px; cursor: pointer"
           class="el-icon-plus"
           title="添加自定义属性"
           @click="showAttributeDialog(null)"
         ></i>
-        <i
+        <!-- <i
           style="display: inline-block; cursor: not-allowed"
           class="el-icon-s-tools"
           title="权限"
-        ></i>
+        ></i> -->
       </div>
       <div class="attribute-row">
         <span
@@ -172,6 +173,7 @@ export default {
         updateBy: "",
         createTime: "",
         createBy: "",
+        fileType: '1', // 1是文件，2是文件夹
       },
       isPreview: false,
       dialogVisible: false,
@@ -318,6 +320,7 @@ export default {
           updateBy: "",
           createTime: "",
           createBy: "",
+          fileType: '1', // 1是文件，2是文件夹
         };
       }
       this.setResize();

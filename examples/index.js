@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 15:02:30
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-21 10:27:36
+ * @LastEditTime: 2023-09-22 18:15:46
  * @Description: 请输入
  */
 import '@/assets/scss/global.scss';
@@ -28,7 +28,7 @@ if (typeof window !== "undefined" && window.Vue) {
   install(window.Vue);
 }
 export default {
-  version: "1.1.6",
+  version: "1.1.10",
   // 导出的对象必须具备一个 install 方法
   install,
   // 组件列表

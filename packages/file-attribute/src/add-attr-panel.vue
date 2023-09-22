@@ -88,7 +88,7 @@ export default {
       let obj = {};
       if (value) {
         obj = cloneDeep(value);
-        obj.detailDTOS = obj.detailDTOList;
+        obj.detailDTOS = obj.detailDTOList || [];
       } else {
         obj = {
           dictName: "",
@@ -123,9 +123,10 @@ export default {
             // 固定值
             param.dictItemType = 2;
             param.detailDTOS = cloneDeep(domains);
-          } else if (this.customAttribute.detailDTOS.length === 0) {
+          } else if (this.customAttribute.detailDTOS.length === 1) {
             // 自由输入
             const domains = this.customAttribute.detailDTOS;
+            domains[0].isSelected = 1;
             param.dictItemType = 1;
             param.detailDTOS = cloneDeep(domains);
           }
@@ -177,6 +178,10 @@ export default {
     handleDialogClose() {
       this.resetForm("addAttrForm");
       this.delList = [];
+      this.customAttribute = {
+        dictName: "", // 属性名称
+        detailDTOS: [], // 值列表
+      }; // 自定义属性
     },
   },
 };

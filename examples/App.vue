@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 16:44:13
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-20 17:19:09
+ * @LastEditTime: 2023-09-21 17:31:13
  * @Description: 请输入
 -->
 <template>
@@ -195,6 +195,25 @@ export default {
                 description: "3",
                 isSelected: 0,
                 dictType: null,
+                delFlag: 0,
+              },
+            ],
+          },
+          {
+            dictId: "40287e118ab1dd14018ab70a987a00d4",
+            dictName: "qer",
+            dictItemId: null,
+            dictItemType: 1,
+            dictUseType: 2,
+            dictType: 2,
+            detailDTOList: [
+              {
+                id: "40287e118ab1dd14018ab70a98f000d6",
+                pid: null,
+                itemText: "dfa",
+                description: "dfad",
+                isSelected: 1,
+                dictType: 2,
                 delFlag: 0,
               },
             ],
