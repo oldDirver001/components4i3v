@@ -129,21 +129,20 @@
       </template>
       <div class="file-info">
         <div class="file-info-row">
-          文件大小：{{ formatFileSize(attributeDetail.fileSize ||
-                attributeDetail.folderSize) }}
+          文件大小：{{
+            formatFileSize(
+              attributeDetail.fileSize || attributeDetail.folderSize
+            )
+          }}
         </div>
         <div class="file-info-item">
           更新时间：{{ attributeDetail.updateTime }}
         </div>
-        <div class="file-info-item">
-          更新人：{{ attributeDetail.updateBy }}
-        </div>
+        <div class="file-info-item">更新人：{{ attributeDetail.updateBy }}</div>
         <div class="file-info-item">
           创建时间：{{ attributeDetail.createTime }}
         </div>
-        <div class="file-info-item">
-          创建人：{{ attributeDetail.createBy }}
-        </div>
+        <div class="file-info-item">创建人：{{ attributeDetail.createBy }}</div>
       </div>
     </div>
     <AddAttrPanel
@@ -151,15 +150,23 @@
       @add-attribute="handleAddAttrbute"
       @edit-attribute="handleEditAttrbute"
     ></AddAttrPanel>
+    <AddAttrList
+      ref="AddAttrList"
+      @add-attribute="handleAddAttrbute"
+      @edit-attribute="handleEditAttrbute"
+      @dialog-confirm="handleListConfirm"
+      @delete-attribute="deleteAttribute"
+    ></AddAttrList>
   </div>
 </template>
 <script>
 import { cloneDeep } from "lodash";
 import AddAttrPanel from "./add-attr-panel.vue";
+import AddAttrList from "./add-attr-list.vue";
 
 export default {
   name: "I3vAttrPanel",
-  components: { AddAttrPanel },
+  components: { AddAttrPanel, AddAttrList },
   data() {
     return {
       options: [],
@@ -173,7 +180,7 @@ export default {
         updateBy: "",
         createTime: "",
         createBy: "",
-        fileType: '1', // 1是文件，2是文件夹
+        fileType: "1", // 1是文件，2是文件夹
       },
       isPreview: false,
       dialogVisible: false,
@@ -223,6 +230,7 @@ export default {
       defaultSelect: [],
       attributeLabelWidth: 76, // 属性名称的宽度
       disabledList: [], // 不能选择的二级分类id
+      attrList: [],
     };
   },
   computed: {
@@ -270,7 +278,7 @@ export default {
      */
     async changeCheckbox(ids, value) {
       const payload = {
-        dataId: '',
+        dataId: "",
         dictId: value.dictId,
         dictItemIds: ids,
       };
@@ -278,6 +286,10 @@ export default {
     },
     setCategoryTree(value) {
       this.options = value;
+    },
+    setAttrList(value) {
+      this.attrList = value;
+      this.$refs.AddAttrList.setData(this.attrList);
     },
     /**
      * @description: 外部通过ref调用此方法给 attributeDetail 赋值
@@ -320,7 +332,7 @@ export default {
           updateBy: "",
           createTime: "",
           createBy: "",
-          fileType: '1', // 1是文件，2是文件夹
+          fileType: "1", // 1是文件，2是文件夹
         };
       }
       this.setResize();
@@ -470,7 +482,11 @@ export default {
      * @return {void}
      */
     showAttributeDialog(value) {
-      this.$refs.AddAttrPanel.editFormDefData(value);
+      if (value) {
+        this.$refs.AddAttrPanel.editFormDefData(value);
+      } else {
+        this.$refs.AddAttrList.showDialog();
+      }
       // this.$refs.AddAttrPanel.dialogVisible = true;
     },
     /**
@@ -491,6 +507,9 @@ export default {
       } else {
         return Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100 + "GB";
       }
+    },
+    handleListConfirm(value) {
+      this.$emit("list-confirm", value);
     },
   },
 };

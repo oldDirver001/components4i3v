@@ -1,6 +1,6 @@
 .el-scrollbar__wrap {
   height: 100%;
-  overflow-x: auto!important;
+  overflow-x: auto !important;
 }
 
 .ss-dialog .el-dialog {
@@ -49,4 +49,82 @@
   padding: 26px 30px 24px;
   background-color: #f5f7fa;
   border-radius: 0 0 10px 10px;
+}
+
+.add-attr-dialog {
+  .add-attr-form {
+    .el-form-item__content {
+      display: flex;
+      align-items: center;
+      i {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 46px;
+        height: 46px;
+        box-sizing: border-box;
+        border: 1px solid rgba(197, 208, 227, 1);
+        border-radius: 6px;
+        cursor: pointer;
+        margin-left: 16px;
+      }
+      .el-icon-plus:hover {
+        color: #fff;
+        background-color: #409eff;
+        border-color: #409eff;
+      }
+      .el-icon-close:hover {
+        color: #fff;
+        background: rgba(255, 87, 51, 1);
+        border-color: rgba(255, 87, 51, 1);
+      }
+      .el-input {
+        flex: 1;
+      }
+      .el-input + .el-input {
+        margin-left: 16px;
+      }
+      .el-input__inner {
+        height: 46px;
+        line-height: 46px;
+      }
+    }
+  }
+}
+
+.table-head-bg {
+  th.el-table__cell {
+    background-color: #fafbfc;
+  }
+}
+
+.el-table {
+  .el-table__row:hover {
+    .icon {
+      i {
+        display: inline-block;
+      }
+    }
+  }
+  .hide-btn__icon {
+    display: flex;
+    .text {
+      width: calc(100% - 46px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .icon {
+      display: inline-block;
+      i {
+        display: none;
+        margin-left: 8px;
+        color: #CFD7E6;
+        cursor: pointer;
+      }
+      i:hover {
+        color: #FF5733;
+      }
+    }
+  }
 }

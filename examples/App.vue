@@ -2,7 +2,7 @@
  * @Author: xiongdaoqi
  * @Date: 2023-08-23 16:44:13
  * @LastEditors: xiongdaoqi
- * @LastEditTime: 2023-09-21 17:31:13
+ * @LastEditTime: 2023-09-26 16:36:11
  * @Description: 请输入
 -->
 <template>
@@ -12,7 +12,9 @@
     <!-- <I3vProjectDirectory></I3vProjectDirectory> -->
     <!-- <I3vTaskDirectory></I3vTaskDirectory> -->
     <!-- <I3vAddAttrPanel ref="I3vAddAttrPanel"></I3vAddAttrPanel> -->
-    <!-- <button @click="handleShow">button</button> -->
+    <!-- <button @click="handleShow">show dialog</button> -->
+    <!-- <button @click="handleShow2">show dialog</button> -->
+    <!-- <I3vAddAttrList ref="I3vAddAttrList"></I3vAddAttrList> -->
   </div>
 </template>
 
@@ -21,6 +23,7 @@ import I3vFileAttribute from "../packages/file-attribute/src/main.vue";
 // import I3vProjectDirectory from '../packages/project-directory/src/main.vue'
 // import I3vTaskDirectory from '../packages/task-directory/src/main.vue'
 // import I3vAddAttrPanel from "../packages/file-attribute/src/add-attr-panel.vue";
+// import I3vAddAttrList from "../packages/file-attribute/src/add-attr-list.vue";
 
 export default {
   name: "App",
@@ -29,12 +32,14 @@ export default {
     // I3vProjectDirectory,
     // I3vTaskDirectory,
     // I3vAddAttrPanel,
+    // I3vAddAttrList,
   },
   methods: {
     handleShowAttr() {
       this.$refs.I3vFileAttribute.setAttributeDetail({
         id: "40287e118a8c3c64018a8c46f2740027",
         folderName: "搜狗拼音",
+        fileType: "2",
         folderDescribe: "搜狗拼音",
         folderAttribute: null,
         identifyId: "40287e118a8c3c64018a8c46f2740027",
@@ -220,111 +225,64 @@ export default {
           },
         ],
       });
-      // this.$refs.I3vFileAttribute.setCategoryTree([
-      //   {
-      //     id: "40287e118a83c9ef018a83ceeba90011",
-      //     pid: "40287e118a83c9ef018a83ceeb7f0010",
-      //     itemText: "企业文件",
-      //     description: null,
-      //     isSelected: 0,
-      //     dictType: null,
-      //     delFlag: 0,
-      //     children: [],
-      //   },
-      //   {
-      //     id: "40287e118a83c9ef018a83ceeba90012",
-      //     pid: "40287e118a83c9ef018a83ceeb7f0010",
-      //     itemText: "个人文件",
-      //     description: null,
-      //     isSelected: 0,
-      //     dictType: null,
-      //     delFlag: 0,
-      //     children: [
-      //       {
-      //         id: "40287e118a871f99018a871f99cf0000",
-      //         pid: "40287e118a83c9ef018a83ceeba90012",
-      //         itemText: "我的收藏",
-      //         description: null,
-      //         isSelected: 0,
-      //         dictType: 2,
-      //         delFlag: 0,
-      //         children: [
-      //           {
-      //             id: "40287e118a871f99018a8730ac1f000b",
-      //             pid: "40287e118a871f99018a871f99cf0000",
-      //             itemText: "视频收藏",
-      //             description: null,
-      //             isSelected: 0,
-      //             dictType: 2,
-      //             delFlag: 0,
-      //             children: [],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: "40287e118a83c9ef018a83d8d1ae0013",
-      //     pid: "ff8080818a82c2b0018a83283c2a0082",
-      //     itemText: "其他文件",
-      //     description: null,
-      //     isSelected: 0,
-      //     dictType: null,
-      //     delFlag: 0,
-      //     children: [],
-      //   },
-      //   {
-      //     id: "40287e118a83c9ef018a86f468a90016",
-      //     pid: "40287e118a83c9ef018a83ceeb7f0010",
-      //     itemText: "其他文件2",
-      //     description: null,
-      //     isSelected: 0,
-      //     dictType: 2,
-      //     delFlag: 0,
-      //     children: [],
-      //   },
-      //   {
-      //     id: "40287e118a884dfa018a88740fc40014",
-      //     pid: "40287e118a884dfa018a8873e9290013",
-      //     itemText: "子分类C-1",
-      //     description: null,
-      //     isSelected: 0,
-      //     dictType: 2,
-      //     delFlag: 0,
-      //     children: [],
-      //   },
-      //   {
-      //     id: "40287e118a884dfa018a8890a5e40019",
-      //     pid: "40287e118a83c9ef018a83ceeb7f0010",
-      //     itemText: "asdf",
-      //     description: null,
-      //     isSelected: 1,
-      //     dictType: 2,
-      //     delFlag: 0,
-      //     children: [
-      //       {
-      //         id: "40287e118a884dfa018a8890d8db001a",
-      //         pid: "40287e118a884dfa018a8890a5e40019",
-      //         itemText: "allin",
-      //         description: null,
-      //         isSelected: 0,
-      //         dictType: 2,
-      //         delFlag: 0,
-      //         children: [],
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: "40287e118a915231018a9184f9980008",
-      //     pid: "40287e118a83c9ef018a83ceeb7f0010",
-      //     itemText: "doublemint",
-      //     description: null,
-      //     isSelected: 0,
-      //     dictType: 2,
-      //     delFlag: 0,
-      //     children: [],
-      //   },
-      // ]);
+      this.$refs.I3vFileAttribute.setAttributeList([
+        {
+          dictId: "40287e118ab1dd14018ab582dc6b004d",
+          dictName: "三顿半",
+          dictItemId: null,
+          dictItemType: 2,
+          dictUseType: 2,
+          dictType: 2,
+          detailDTOList: [
+            {
+              id: "40287e118ab1dd14018ab582dcd2004f",
+              pid: null,
+              itemText: "第一顿",
+              description: "第一顿",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+            {
+              id: "40287e118ab1dd14018ab582dcd30051",
+              pid: null,
+              itemText: "第三顿",
+              description: "第三顿",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+            {
+              id: "40287e118ab1dd14018ab593578d0056",
+              pid: null,
+              itemText: "第六吨",
+              description: "第六吨",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+          ],
+        },
+        {
+          dictId: "40287e118ab1dd14018ab70a987a00d4",
+          dictName: "qer",
+          dictItemId: null,
+          dictItemType: 1,
+          dictUseType: 2,
+          dictType: 2,
+          detailDTOList: [
+            {
+              id: "40287e118ab1dd14018ab70a98f000d6",
+              pid: null,
+              itemText: "dfa",
+              description: "dfad",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+          ],
+        },
+      ]);
     },
     handleShow() {
       // this.$refs.I3vAddAttrPanel.showDialog()
@@ -358,6 +316,66 @@ export default {
           },
         ],
       });
+    },
+    handleShow2() {
+      this.$refs.I3vAddAttrList.setData([
+        {
+          dictId: "40287e118ab1dd14018ab582dc6b004d",
+          dictName: "三顿半",
+          dictItemId: null,
+          dictItemType: 2,
+          dictUseType: 2,
+          dictType: 2,
+          detailDTOList: [
+            {
+              id: "40287e118ab1dd14018ab582dcd2004f",
+              pid: null,
+              itemText: "第一顿",
+              description: "第一顿",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+            {
+              id: "40287e118ab1dd14018ab582dcd30051",
+              pid: null,
+              itemText: "第三顿",
+              description: "第三顿",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+            {
+              id: "40287e118ab1dd14018ab593578d0056",
+              pid: null,
+              itemText: "第六吨",
+              description: "第六吨",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+          ],
+        },
+        {
+          dictId: "40287e118ab1dd14018ab70a987a00d4",
+          dictName: "qer",
+          dictItemId: null,
+          dictItemType: 1,
+          dictUseType: 2,
+          dictType: 2,
+          detailDTOList: [
+            {
+              id: "40287e118ab1dd14018ab70a98f000d6",
+              pid: null,
+              itemText: "dfa",
+              description: "dfad",
+              isSelected: null,
+              dictType: 2,
+              delFlag: 0,
+            },
+          ],
+        },
+      ]);
     },
   },
 };

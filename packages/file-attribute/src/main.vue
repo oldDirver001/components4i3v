@@ -10,6 +10,7 @@
           @delete-attribute="handleDelAttribute"
           @update-dictItem="handleUpdateAttribute"
           @change-category="handleChangeCategory"
+          @list-confirm="handleListConfirm"
         ></I3vAttrPanel>
       </el-tab-pane>
       <el-tab-pane label="日志" name="log">
@@ -186,6 +187,10 @@ export default {
     };
   },
   methods: {
+    handleListConfirm(value) {
+      console.log("list-confirm :>> ", value);
+      this.$emit("list-confirm", value);
+    },
     handleAddAttribute(value) {
       console.log("add-attribute :>> ", value);
       this.$emit("add-attribute", value);
@@ -245,6 +250,9 @@ export default {
      */
     setAttributeDetail(value) {
       this.$refs.I3vAttrPanel.setAttributeDetail(value);
+    },
+    setAttributeList(value) {
+      this.$refs.I3vAttrPanel.setAttrList(value);
     },
     /**
      * @description: 获取字符串的第一个字符
